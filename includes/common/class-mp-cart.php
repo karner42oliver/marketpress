@@ -348,6 +348,11 @@ class MP_Cart {
 		$cache_key = implode( ',', $items );
 		$products  = array();
 
+		// Wenn keine Items, kein Cache-Key -> direkt leer zurück
+		if ( empty( $cache_key ) ) {
+			return $products;
+		}
+
 		if ( $_posts = wp_cache_get( $cache_key, 'mp_cart' ) ) {
 			$posts = $_posts;
 		} else {

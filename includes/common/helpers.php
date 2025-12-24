@@ -87,6 +87,7 @@ if ( ! function_exists( 'mp_filter_email' ) ) :
 		$items = $cart->get_items_as_objects();
 
 		// Order info
+		$order_info = '';
 		if ( count( $items ) > 0 ) {
 			$order_info = '<table width="100%">
 							<tr>

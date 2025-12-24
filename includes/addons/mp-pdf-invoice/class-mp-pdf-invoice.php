@@ -201,6 +201,7 @@ class MP_PDF_Invoice {
 
 		if ( $type == self::PDF_INVOICE ) {
 
+			if ( !is_array( $order_items ) ) $order_items = array();
 			foreach ( $order_items as $product_id => $items ){
 				foreach ( $items as $item ){
 					$order_details[] = sprintf( '<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $item['name'], $item['quantity'], mp_format_currency( '', $item['price'] )

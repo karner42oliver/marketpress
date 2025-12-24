@@ -1,3 +1,4 @@
+<title>PDF-Rechnung</title>
 <style type="text/css">
 	@font-face {
 		font-family: 'Open Sans';
