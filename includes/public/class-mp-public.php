@@ -379,8 +379,8 @@ class MP_Public {
 			   wp_enqueue_style( 'mp-swiper-custom', mp_plugin_url( 'ui/css/mp-swiper-custom.css' ), array('swiper-bundle'), MP_VERSION );
 			   wp_enqueue_script( 'swiper-bundle', mp_plugin_url( 'node_modules/swiper/swiper-bundle.min.js' ), array(), MP_VERSION );
 			   wp_enqueue_script( 'mp-swiper-init', mp_plugin_url( 'ui/js/mp-swiper-init.js' ), array('swiper-bundle'), MP_VERSION );
-			wp_enqueue_script( 'lightgallery', mp_plugin_url( 'ui/lightgallery/js/lightgallery.js' ), array( 'jquery' ), MP_VERSION );
-			wp_enqueue_style( 'lightgallery', mp_plugin_url( 'ui/lightgallery/css/lightgallery.css' ), array(), MP_VERSION );
+			   wp_enqueue_style( 'lightgallery-bundle', mp_plugin_url( 'node_modules/lightgallery/css/lightgallery-bundle.min.css' ), array(), MP_VERSION );
+			   wp_enqueue_script( 'mp-lightgallery-init', mp_plugin_url( 'ui/js/mp-lightgallery-init.js' ), array(), MP_VERSION );
 		}
 
 		/*

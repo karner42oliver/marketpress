@@ -2469,15 +2469,9 @@ if ( ! function_exists( 'mp_product' ) ) {
 		$lightbox_code = '';
 		$show_lightbox = mp_get_setting( 'show_lightbox' );
 
-		if ( $show_lightbox == 1 && mp_get_setting( 'disable_large_image' ) != 1 ) {
-			$lightbox_code = "onSliderLoad: function(el) {
-											el.lightGallery({
-												selector: '#mp-product-gallery .lslide',
-												thumbnail: true,
-												zoom: true,
-											});
-										}";
-		}
+		   if ( $show_lightbox == 1 && mp_get_setting( 'disable_large_image' ) != 1 ) {
+			   $lightbox_code = "onSliderLoad: function(el) { window.initProductGalleryLightbox && window.initProductGalleryLightbox('#mp-product-gallery', { selector: '.swiper-slide' }); }";
+		   }
 
         $lightbox_code = apply_filters( 'mp_single_product_image_lightbox', $lightbox_code );
 
