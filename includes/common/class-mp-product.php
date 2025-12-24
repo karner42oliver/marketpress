@@ -163,9 +163,9 @@ public $content_tabs = array();
 						<div class="mp_product_options_callout">
 
 							<form id="mp-product-options-callout-form"
-								  class="mp_form mp_form-mp-product-options-callout" method="post"
-								  data-ajax-url="<?php echo mp_get_ajax_url( 'admin-ajax.php?action=mp_update_cart' ); ?>"
-								  action="<?php echo get_permalink( mp_get_setting( 'pages->cart' ) ); ?>">
+								class="mp_form mp_form-mp-product-options-callout" method="post"
+								data-ajax-url="<?php echo mp_get_ajax_url( 'admin-ajax.php?action=mp_update_cart' ); ?>"
+								action="<?php echo mp_cart_link( false, true ); ?>">
 								<input type="hidden" name="product_id" value="<?php echo $product->ID; ?>">
 								<input type="hidden" name="product_qty_changed" value="0">
 								<?php $product->display_price(); ?>

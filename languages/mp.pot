@@ -7249,7 +7249,7 @@ msgid "[mp_global_tag_cloud]"
 msgstr ""
 
 #: includes/common/template-functions.php:919
-msgid "Kasse"
+msgid "Checkout"
 msgstr ""
 
 #: includes/common/template-functions.php:928

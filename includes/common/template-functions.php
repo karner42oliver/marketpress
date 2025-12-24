@@ -802,10 +802,10 @@ if ( ! function_exists( 'mp_cart_link' ) ) :
 	function mp_cart_link( $echo = true, $url = false, $link_text = false ) {
 		if ( mp_cart()->is_global && ! mp_is_main_site() ) {
 			switch_to_blog( MP_ROOT_BLOG );
-			$link = get_permalink( mp_get_setting( 'pages->cart' ) );
+			   $link = mp_store_page_url( 'cart', false );
 			restore_current_blog();
 		} else {
-			$link = get_permalink( mp_get_setting( 'pages->cart' ) );
+			   $link = mp_store_page_url( 'cart', false );
 		}
 
 		if ( ! $url ) {
@@ -916,7 +916,7 @@ if ( ! function_exists( 'mp_create_store_page' ) ) :
 
 			case 'checkout' :
 				$args = array(
-					'post_title'   => __( 'Kasse', 'mp' ),
+					'post_title'   => __( 'Checkout', 'mp' ),
 					'post_content' => '[mp_checkout]',
 					'post_parent'  => mp_get_setting( 'pages->store', 0 )
 				);
@@ -1695,7 +1695,12 @@ if ( ! function_exists( 'mp_store_page_url' ) ) :
 		}
 
 		if ( $post_id = mp_get_setting( "pages->{$page}" ) ) {
-			$url = trailingslashit( get_permalink( $post_id ) ) . $append;
+			       $url = trailingslashit( get_permalink( $post_id ) ) . $append;
+		       }
+
+		       // Immer HTTPS erzwingen, wenn die Seite per HTTPS aufgerufen wird
+		       if ( is_ssl() && strpos($url, 'http://') === 0 ) {
+			       $url = preg_replace( '/^http:/', 'https:', $url );
 		}
 
 		if ( $echo ) {

@@ -16,7 +16,7 @@ Das einfachste und dennoch mächtigste ClassicPress-E-Commerce-Plugin - Ob klein
 
 ### Verkaufe alles von digitalen Downloads bis hin zu physischen Gütern. MarketPress ist das E-Commerce-Plugin, das alles kann – keine Erweiterungen erforderlich.
 
-MarketPress bietet die einfachste Möglichkeit, alles online zu verkaufen, mit unzähligen integrierten Kernfunktionen und einfacher Konfiguration. Ganz gleich, ob Du eine einzelne Online-Storefront oder ein ganzes E-Commerce-Netzwerk für Geschäfte einrichten möchtest, MarketPress ist die Lösung der Wahl für ClassicPress und Multisite SuperPowers. Führe Kunden durch das Durchsuchen Deiner Produkte, über das Hinzufügen von Artikeln zu ihrem Warenkorb und schließlich bis zur Kasse und Lieferung. Du kannst sogar Aktualisierungen zum Status von Kundenbestellungen bereitstellen.
+MarketPress bietet die einfachste Möglichkeit, alles online zu verkaufen, mit unzähligen integrierten Kernfunktionen und einfacher Konfiguration. Ganz gleich, ob Du eine einzelne Online-Storefront oder ein ganzes E-Commerce-Netzwerk für Geschäfte einrichten möchtest, MarketPress ist die Lösung der Wahl für ClassicPress und Multisite SuperPowers. Führe Kunden durch das Durchsuchen Deiner Produkte, über das Hinzufügen von Artikeln zu ihrem Warenkorb und schließlich bis zur Checkout und Lieferung. Du kannst sogar Aktualisierungen zum Status von Kundenbestellungen bereitstellen.
 
 ### Mit Deinem Feedback erstellt
 
@@ -60,7 +60,7 @@ Akzeptiere Zahlungen über 15 beliebte Zahlungsabwickler, darunter Stripe, PayPa
 
 **Warenkorbverhalten**
 
-Wähle ob Benutzer auf den aktuellen Produktseiten bleiben oder zur Kasse weitergeleitet werden, wenn sie ein Produkt in ihren Warenkorb legen.
+Wähle ob Benutzer auf den aktuellen Produktseiten bleiben oder zur Checkout weitergeleitet werden, wenn sie ein Produkt in ihren Warenkorb legen.
 
 ![image](assets/icons/social-1x.png)
 
@@ -356,7 +356,7 @@ Der globale Einkaufswagen in MarketPress ist von Grund auf so konzipiert, dass j
 1. Aufgrund von domänenübergreifenden Sicherheitsbedenken ist der globale Warenkorb nicht mit domänenbezogenen Unterseiten kompatibel.
 2. Wenn der globale Warenkorb aktiv ist, steht im Netzwerk nur das PayPal Express Checkout-Gateway zur Nutzung zur Verfügung.
 
-Nun zu verketteten Zahlungen (auch bekannt als [parallele Zahlungen](https://developer.paypal.com/webapps/developer/docs/classic/express-checkout/integration-guide/ECParallelPaymens/ „Parallelzahlungen“)). . Sie ermöglichen es einem Kunden, eine Bestellung einmal zur Kasse zu gehen/zu bezahlen und das Geld dann automatisch an mehrere Händler auf einem Marktplatz zu verteilen. Im Fall von MarketPress stellen wir dies über das PayPal Chained Payments-Gateway bereit, sodass Du als Eigentümer des Filialnetzwerks Deinen Anteil am Gewinn für einen Verkauf einsammeln kannst, während Deinen Ladenbesitzern der Rest zugesandt wird.
+Nun zu verketteten Zahlungen (auch bekannt als [parallele Zahlungen](https://developer.paypal.com/webapps/developer/docs/classic/express-checkout/integration-guide/ECParallelPaymens/ „Parallelzahlungen“)). . Sie ermöglichen es einem Kunden, eine Bestellung einmal zur Checkout zu gehen/zu bezahlen und das Geld dann automatisch an mehrere Händler auf einem Marktplatz zu verteilen. Im Fall von MarketPress stellen wir dies über das PayPal Chained Payments-Gateway bereit, sodass Du als Eigentümer des Filialnetzwerks Deinen Anteil am Gewinn für einen Verkauf einsammeln kannst, während Deinen Ladenbesitzern der Rest zugesandt wird.
 
 ![MarketPress – PayPal Chained Payments](assets/images/mp-3006-network-chained-zahlungen.png)
 
