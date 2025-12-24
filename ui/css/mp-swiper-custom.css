@@ -1,0 +1,10 @@
+:root {
+  --swiper-theme-color: rgba(80,80,80,0.7);
+  --swiper-navigation-color: rgba(80,80,80,0.7);
+}
+
+/* Optional: Hover-Effekt für bessere Sichtbarkeit */
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  --swiper-navigation-color: rgba(40,40,40,0.9);
+}

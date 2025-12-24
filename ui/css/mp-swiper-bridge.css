@@ -1,0 +1,4 @@
+<?php
+// Swiper-Bundle für das Frontend einbinden
+// Diese Datei wird als Brücke dienen, um Swiper im Theme/Plugin zu laden und zu initialisieren.
+// Siehe ui/js/mp-swiper-init.js für die eigentliche Initialisierung

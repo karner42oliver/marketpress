@@ -1,0 +1,6 @@
+{
+    "require": {
+        "paypal/paypal-checkout-sdk": "^1.0",
+        "stripe/stripe-php": "^17.2"
+    }
+}
