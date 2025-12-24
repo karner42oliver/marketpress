@@ -380,7 +380,11 @@ class MP_Public {
 			   wp_enqueue_script( 'swiper-bundle', mp_plugin_url( 'node_modules/swiper/swiper-bundle.min.js' ), array(), MP_VERSION );
 			   wp_enqueue_script( 'mp-swiper-init', mp_plugin_url( 'ui/js/mp-swiper-init.js' ), array('swiper-bundle'), MP_VERSION );
 			   wp_enqueue_style( 'lightgallery-bundle', mp_plugin_url( 'node_modules/lightgallery/css/lightgallery-bundle.min.css' ), array(), MP_VERSION );
-			   wp_enqueue_script( 'mp-lightgallery-init', mp_plugin_url( 'ui/js/mp-lightgallery-init.js' ), array(), MP_VERSION );
+			   wp_enqueue_style( 'mp-lightgallery-custom', mp_plugin_url( 'ui/css/mp-lightgallery-custom.css' ), array('lightgallery-bundle'), MP_VERSION );
+			   wp_enqueue_script( 'lightgallery-bundle', mp_plugin_url( 'node_modules/lightgallery/lightgallery.min.js' ), array(), MP_VERSION );
+			   wp_enqueue_script( 'lightgallery-plugin-zoom', mp_plugin_url( 'node_modules/lightgallery/plugins/zoom/lg-zoom.min.js' ), array('lightgallery-bundle'), MP_VERSION );
+			   wp_enqueue_script( 'lightgallery-plugin-thumbnail', mp_plugin_url( 'node_modules/lightgallery/plugins/thumbnail/lg-thumbnail.min.js' ), array('lightgallery-bundle'), MP_VERSION );
+			   wp_enqueue_script( 'mp-lightgallery-init', mp_plugin_url( 'ui/js/mp-lightgallery-init.js' ), array('lightgallery-bundle','lightgallery-plugin-zoom','lightgallery-plugin-thumbnail'), MP_VERSION );
 		}
 
 		/*
