@@ -1157,6 +1157,9 @@ class MP_Orders_Admin {
 			//! Order Items
 			case 'mp_orders_items' :
 				$items = get_post_meta( $post_id, 'mp_order_items', true );
+				if (!is_numeric($items) || $items === '') {
+					$items = 0;
+				}
 				$html .= number_format_i18n( $items );
 				break;
 
