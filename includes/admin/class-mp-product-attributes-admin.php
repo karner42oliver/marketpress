@@ -472,21 +472,22 @@ class MP_Product_Attributes_Admin {
 		}
 		?>
 		<script type="text/javascript">
-			jQuery( document ).ready( function( $ ) {
-				$( '.wpmudev-subfields' ).on( 'blur', 'input[name^="product_attribute_terms"][name*="[name]"]', function() {
-					var $this = $( this ),
-						$slugField = $this.closest( '.wpmudev-subfield' ).next( '.wpmudev-subfield' ).find( 'input' );
-
-					if ( $.trim( $slugField.val() ).length > 0 ) {
-						// Only continue if slug field is empty
-						return;
-					}
-
-					var slug = $this.val().toLowerCase().replace( / /ig, '-' ).replace( /[^a-z0-9-]/ig, '' );
-
-					$slugField.val( slug );
-				} );
-			} );
+		document.addEventListener('DOMContentLoaded', function() {
+			var subfields = document.querySelectorAll('.wpmudev-subfields');
+			subfields.forEach(function(subfieldWrap) {
+				subfieldWrap.addEventListener('blur', function(e) {
+					var input = e.target;
+					if (!input.matches('input[name^="product_attribute_terms"][name*="[name]"]')) return;
+					var subfield = input.closest('.wpmudev-subfield');
+					var nextSubfield = subfield ? subfield.nextElementSibling : null;
+					var slugField = nextSubfield ? nextSubfield.querySelector('input') : null;
+					if (!slugField) return;
+					if (slugField.value.trim().length > 0) return;
+					var slug = input.value.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+					slugField.value = slug;
+				}, true);
+			});
+		});
 		</script>
 		<?php
 	}
