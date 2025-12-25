@@ -89,4 +89,4 @@ function register_marketpress_categories_widget() {
     register_widget('MarketPress_Categories_Widget');
 }
 add_action('widgets_init', 'register_marketpress_categories_widget');
-?>
+

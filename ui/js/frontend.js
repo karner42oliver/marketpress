@@ -144,21 +144,26 @@ var marketpress = { };
 			
         },
         /**
-         * Initialize select2 elements
+         * Initialize Slim Select elements (statt select2)
          *
          * @since 3.0
          */
-		initSelect2: function( ) {
-			$( 'select.mp_select2' ).not( '.select2-offscreen' ).mp_select2( {
-				"dropdownCssClass": "mp_select2",
-				"dropdownAutoWidth": 1,
-				"minimumResultsForSearch": -1	// hide the search box
-			} );
-			$( 'select.mp_select2_search' ).not( '.select2-offscreen' ).mp_select2( {
-				"dropdownCssClass": "mp_select2",
-				"dropdownAutoWidth": 1
-			} );
-		},
+        initSelect2: function() {
+            var selects = document.querySelectorAll('select.mp_select2, select.mp-select2, select.mp_select2_search');
+            selects.forEach(function(el) {
+                if (typeof SlimSelect !== 'undefined') {
+                    if (!el.slimSelect) {
+                        el.slimSelect = new SlimSelect({
+                            select: el,
+                            placeholder: el.getAttribute('placeholder') || '',
+                            allowDeselect: true,
+                            showSearch: !el.classList.contains('mp_select2') || el.classList.contains('mp_select2_search'),
+                            closeOnSelect: !el.hasAttribute('multiple'),
+                        });
+                    }
+                }
+            });
+        },
         /**
          * Initialize order look up
          *

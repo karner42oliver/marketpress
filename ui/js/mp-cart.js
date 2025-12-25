@@ -322,16 +322,20 @@ var mp_cart = { };
                     $form.find( 'input[name="product_quantity"]' ).val( resp.data.qty_in_stock );
                 }
 
-                $( '[name^="product_attr_"].mp_select2' ).mp_select2( {
-                    "dropdownCssClass": "mp_select2",
-                    "dropdownAutoWidth": 1,
-                    "minimumResultsForSearch": -1   // hide the search box
-                } );
-
-                $( '[name^="product_attr_"].mp_select2_search' ).mp_select2( {
-                    "dropdownCssClass": "mp_select2",
-                    "dropdownAutoWidth": 1
-                } );
+                var selects = document.querySelectorAll('[name^="product_attr_"].mp_select2, [name^="product_attr_"].mp_select2_search');
+                selects.forEach(function(el) {
+                    if (typeof SlimSelect !== 'undefined') {
+                        if (!el.slimSelect) {
+                            el.slimSelect = new SlimSelect({
+                                select: el,
+                                placeholder: el.getAttribute('placeholder') || '',
+                                allowDeselect: true,
+                                showSearch: el.classList.contains('mp_select2_search'),
+                                closeOnSelect: !el.hasAttribute('multiple'),
+                            });
+                        }
+                    }
+                });
 
                 $.colorbox.resize();
             }
@@ -374,11 +378,20 @@ var mp_cart = { };
                 $( "#colorbox" ).removeAttr( "tabindex" ); //remove tabindex before select2 init
             },
             onComplete: function() {
-                $( "select.mp_select2" ).mp_select2( {
-                    "dropdownCssClass": "mp_select2",
-                    "dropdownAutoWidth": 1,
-                    "minimumResultsForSearch": -1
-                } );
+                var selects = document.querySelectorAll('select.mp_select2');
+                selects.forEach(function(el) {
+                    if (typeof SlimSelect !== 'undefined') {
+                        if (!el.slimSelect) {
+                            el.slimSelect = new SlimSelect({
+                                select: el,
+                                placeholder: el.getAttribute('placeholder') || '',
+                                allowDeselect: true,
+                                showSearch: false,
+                                closeOnSelect: !el.hasAttribute('multiple'),
+                            });
+                        }
+                    }
+                });
             }
         } );
     };
@@ -668,11 +681,7 @@ var mp_cart = { };
     };
 }( jQuery ) );
 
-jQuery( document ).on( 'cbox_cleanup', function() {
-	if ( typeof jQuery('.mp_select2').mp_select2 !== 'undefined' ) {
-		jQuery('.mp_select2').mp_select2('close');
-	}
-} );
+// Slim Select benötigt kein explizites close/destroy wie select2
 
 jQuery( document ).on( 'cbox_complete', function() {
     jQuery.colorbox.resize();

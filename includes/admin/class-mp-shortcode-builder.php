@@ -1478,10 +1478,7 @@ class MP_Shortcode_Builder {
 		wp_enqueue_style( 'colorbox', mp_plugin_url( 'includes/admin/ui/colorbox/colorbox.css' ), false, MP_VERSION );
 		wp_enqueue_script( 'colorbox', mp_plugin_url( 'ui/js/jquery.colorbox-min.js' ), false, MP_VERSION );
 
-		wp_enqueue_style( 'mp-select2', mp_plugin_url( 'ui/select2/select2.css' ), false, MP_VERSION );
-		wp_enqueue_script( 'mp-select2', mp_plugin_url( 'ui/select2/select2.js' ), false, MP_VERSION );
-
-		wp_enqueue_script( 'mp-shortcode-builder', mp_plugin_url( 'includes/admin/ui/js/shortcode-builder.js' ), array( 'colorbox', 'mp-select2' ), MP_VERSION );
+		wp_enqueue_script( 'mp-shortcode-builder', mp_plugin_url( 'includes/admin/ui/js/shortcode-builder.js' ), array( 'colorbox' ), MP_VERSION );
 		wp_localize_script( 'mp-shortcode-builder', 'MP_ShortCode_Builder', array(
 			'select_product' => __( 'Select a Product', 'mp' ),
 		) );		}

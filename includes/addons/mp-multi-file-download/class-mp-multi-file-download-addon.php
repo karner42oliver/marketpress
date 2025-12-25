@@ -80,4 +80,3 @@ endif;
 
 //Instantiate the class
 mp_multi_file_download_addon();
-?>

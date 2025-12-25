@@ -1,93 +1,92 @@
 /* INLINE EDIT */
 
-jQuery( document ).ready( function( $ ) {
 
-    $.fn.selectRange = function( start, end ) {
-        return this.each( function() {
-            if ( this.setSelectionRange ) {
-                this.focus();
-                this.setSelectionRange( start, end );
-            } else if ( this.createTextRange ) {
-                var range = this.createTextRange();
-                range.collapse( true );
-                range.moveEnd( 'character', end );
-                range.moveStart( 'character', start );
-                range.select();
+// Vanilla JS Inline Edit
+document.addEventListener('DOMContentLoaded', function() {
+    function selectRange(input, start, end) {
+        if (input.setSelectionRange) {
+            input.focus();
+            input.setSelectionRange(start, end);
+        }
+    }
+
+    function inlineEdit(elem, connectWith) {
+        var inline_icon_edit = document.createElement('span');
+        inline_icon_edit.className = 'inline-edit-icon';
+        inline_icon_edit.innerHTML = '<i class="fa fa-pencil fa-lg"></i>';
+
+        elem.addEventListener('mouseenter', function() {
+            if (!elem.querySelector('.inline-edit-icon')) {
+                elem.appendChild(inline_icon_edit.cloneNode(true));
             }
-        } );
-    };
-
-    $.fn.inlineEdit = function( replaceWith, connectWith ) {
-        var inline_icon_edit = '<span class="inline-edit-icon"><i class="fa fa-pencil fa-lg"></i></span>';
-
-        $( this ).on('mouseenter', function() {
-            if (!$( this ).find('.inline-edit-icon').length) {
-                $( this ).append( inline_icon_edit );
-            }
-        }).on('mouseleave', function() {
-            $( this ).find( '.inline-edit-icon' ).remove();
+        });
+        elem.addEventListener('mouseleave', function() {
+            var icon = elem.querySelector('.inline-edit-icon');
+            if (icon) icon.remove();
         });
 
-        $( this ).on( 'click', function( ) {
+        elem.addEventListener('click', function() {
+            var orig_val = elem.innerHTML.replace(inline_icon_edit.outerHTML, '');
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'mp_inline_temp_value';
+            input.value = orig_val.trim();
 
-            var orig_val = $( this ).html();
-            orig_val = orig_val.replace( inline_icon_edit, "" );
+            var tr = elem.closest('tr');
+            var post_id = tr ? tr.querySelector('.check-column .check-column-box')?.value : '';
+            var data_meta = elem.getAttribute('data-meta');
+            var data_sub_meta = elem.getAttribute('data-sub-meta');
+            var td = elem.closest('td');
+            var data_type = td ? td.getAttribute('data-field-type') : '';
+            var data_default = elem.getAttribute('data-default');
 
-            $( replaceWith ).val( $.trim( orig_val ) );
+            elem.style.display = 'none';
+            elem.parentNode.insertBefore(input, elem.nextSibling);
+            input.focus();
+            selectRange(input, input.value.length * 2, input.value.length * 2);
 
-            var post_id = $( this ).closest( 'tr' ).find( '.check-column .check-column-box' ).val( );
-            var data_meta = $( this ).attr( 'data-meta' );
-            var data_sub_meta = $( this ).attr( 'data-sub-meta' );
-            var data_type = $( this ).closest( 'td' ).attr( 'data-field-type' );
-            var data_default = $( this ).attr( 'data-default' );
-
-            var elem = $( this );
-
-            elem.hide( );
-            elem.after( replaceWith );
-            replaceWith.focus( );
-            var len = $( replaceWith ).val().length * 2;//has to be * 2 because how Opera counts carriage returns
-
-            $( replaceWith ).selectRange( len, len );
-
-            replaceWith.blur( function( ) {
-
-                if ( $( this ).val( ) != "" ) {
-                    connectWith.val( $( this ).val() ).change( );
-                    if ( data_type == 'number' ) {
-                        var numeric_value = $( this ).val();
-                        numeric_value = numeric_value.replace( ",", "" );
-                        if ( $.isNumeric( numeric_value ) ) {
-                            elem.text( numeric_value );
+            input.addEventListener('blur', function() {
+                var val = input.value;
+                if (val !== '') {
+                    if (connectWith) {
+                        connectWith.value = val;
+                        connectWith.dispatchEvent(new Event('change'));
+                    }
+                    if (data_type === 'number') {
+                        var numeric_value = val.replace(',', '');
+                        if (!isNaN(numeric_value)) {
+                            elem.textContent = numeric_value;
                         } else {
-                            elem.text( 0 );
+                            elem.textContent = '0';
                         }
-                        save_inline_post_data( post_id, data_meta, numeric_value, data_sub_meta );
+                        save_inline_post_data(post_id, data_meta, numeric_value, data_sub_meta);
                     } else {
-                        elem.text( $( this ).val( ) );
-                        save_inline_post_data( post_id, data_meta, $( this ).val( ), data_sub_meta );
+                        elem.textContent = val;
+                        save_inline_post_data(post_id, data_meta, val, data_sub_meta);
                     }
                 } else {
-                    elem.text( data_default );
-                    save_inline_post_data( post_id, data_meta, '', data_sub_meta );
+                    elem.textContent = data_default;
+                    save_inline_post_data(post_id, data_meta, '', data_sub_meta);
                 }
+                input.remove();
+                elem.style.display = '';
+            });
 
-                $( this ).remove( );
-                elem.show( );
-            } );
-        } );
-    };
+            input.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+                e.preventDefault();
+            });
+        });
+    }
 
-    $( ".original_value" ).each( function( index ) {
-        $( this ).inlineEdit( $( '<input name="temp" class="mp_inline_temp_value" type="text" value="" />' ), $( 'input.editable_value' ) );//' + $.trim( $( this ).html( ) ) + '
-    } );
+    document.querySelectorAll('.original_value').forEach(function(elem) {
+        var connectWith = document.querySelector('input.editable_value');
+        inlineEdit(elem, connectWith);
+    });
 
-    $( document ).on( 'keyup', ".mp_inline_temp_value", function( e ) {
-        if ( e.keyCode == 13 ) {
-            $( this ).blur( );
-        }
-        e.preventDefault( );
-    } );
+    // ...existing code...
 
     $( '#mp-product-price-inventory-variants-metabox' ).on( 'keydown', function( event ) {
         if ( event.keyCode === 13 ) {
@@ -97,39 +96,45 @@ jQuery( document ).ready( function( $ ) {
     } );
 
 
-    function save_inline_post_data( post_id, meta_name, meta_value, sub_meta ) {
-        $( '.mp-dashboard-widget-low-stock-wrap-overlay' ).show();
-        var data = {
-            action: 'save_inline_post_data',
-            post_id: post_id,
-            meta_name: meta_name,
-            meta_sub_name: sub_meta,
-            meta_value: meta_value,
-            ajax_nonce: mp_product_admin_i18n.ajax_nonce
-        }
-        $.post(
-            mp_product_admin_i18n.ajaxurl, data
-            ).done( function( data, status ) {
-            if ( status == 'success' ) {
-                var form = $( 'form#inventory_threshhold_form' );
-                $.post(
-                    mp_product_admin_i18n.ajaxurl, form.serialize()
-                    ).done( function( data, status ) {
+    function save_inline_post_data(post_id, meta_name, meta_value, sub_meta) {
+        document.querySelectorAll('.mp-dashboard-widget-low-stock-wrap-overlay').forEach(function(el){ el.style.display = 'block'; });
+        var data = new URLSearchParams();
+        data.append('action', 'save_inline_post_data');
+        data.append('post_id', post_id);
+        data.append('meta_name', meta_name);
+        data.append('meta_sub_name', sub_meta);
+        data.append('meta_value', meta_value);
+        data.append('ajax_nonce', mp_product_admin_i18n.ajax_nonce);
 
-                    $( '.mp-dashboard-widget-low-stock-wrap-overlay' ).hide();
-                    var response = $.parseJSON( data );
-
-                    if ( response.status_message !== '' ) {
-                        $( '.mp-dashboard-widget-low-stock-wrap' ).html( response.output );
-                        $( '.low_stock_value' ).html( response.low_stock_value );
-
-                        $( ".original_value" ).each( function( index ) {
-                            $( this ).inlineEdit( $( '<input name="temp" class="mp_inline_temp_value" type="text" value="" />' ), $( 'input.editable_value' ) );//' + $.trim( $( this ).html( ) ) + '
-                        } );
-                    }
-                } );
-            }
-        } );
+        fetch(mp_product_admin_i18n.ajaxurl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: data.toString()
+        })
+        .then(function(response){ return response.text(); })
+        .then(function(data){
+            var form = document.querySelector('form#inventory_threshhold_form');
+            if (!form) return;
+            fetch(mp_product_admin_i18n.ajaxurl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(form)).toString()
+            })
+            .then(function(response){ return response.text(); })
+            .then(function(data){
+                document.querySelectorAll('.mp-dashboard-widget-low-stock-wrap-overlay').forEach(function(el){ el.style.display = 'none'; });
+                var response;
+                try { response = JSON.parse(data); } catch(e) { response = {}; }
+                if (response.status_message !== '') {
+                    document.querySelectorAll('.mp-dashboard-widget-low-stock-wrap').forEach(function(el){ el.innerHTML = response.output; });
+                    document.querySelectorAll('.low_stock_value').forEach(function(el){ el.innerHTML = response.low_stock_value; });
+                    document.querySelectorAll('.original_value').forEach(function(elem){
+                        var connectWith = document.querySelector('input.editable_value');
+                        inlineEdit(elem, connectWith);
+                    });
+                }
+            });
+        });
     }
 
     jQuery( '.mp_bulk_price' ).on( 'keyup', function() {
@@ -186,100 +191,135 @@ jQuery( document ).ready( function( $ ) {
         e.preventDefault();
     } );
 
-    //Delete controls
-    jQuery( '.mp_popup_controls.mp_delete_controls a.delete-bulk-form' ).on( 'click', function( e ) {
 
-        parent.jQuery.colorbox.close();
-
-        $( '.check-column-box:checked' ).each( function( ) {
-            $( this ).closest( 'tr' ).remove();
-            save_inline_post_data( $( this ).val(), 'delete', '', '' );
-        } );
-
-
-        if ( $( '.check-column-box' ).length == 0 ) {
-            save_inline_post_data( $( '[name="post_ID"]' ).val(), 'delete_variations', '', '' );
-
-            if ( $( '#original_publish' ).val( ) == 'Publish' ) {
-                $( '#save-post' ).removeAttr( 'dasabled' );
-                //alert('published click!');
-                $( '#save-post' ).click( );
+    // Delete controls (Vanilla JS)
+    document.querySelectorAll('.mp_popup_controls.mp_delete_controls a.delete-bulk-form').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            // Schließe ggf. Colorbox (Legacy)
+            if (window.parent && window.parent.jQuery && window.parent.jQuery.colorbox) {
+                window.parent.jQuery.colorbox.close();
             }
-
-            if ( $( '#original_publish' ).val( ) == 'Update' ) {
-                $( '#publish' ).removeAttr( 'dasabled' );
-                $( '#publish' ).click( );
-            }
-        }
-
-        return false;
-        e.preventDefault();
-    } )
-
-    /* Close thickbox window on link / cancel click */
-    $( document ).on( 'click', '.mp_popup_controls a.cancel', function( e ) {
-        parent.jQuery.colorbox.close();
-        return false;
-        e.preventDefault();
-    } );
-
-    $( document ).on( 'click', "a.open_ajax", function( e ) {
-        $.colorbox( {
-            href: mp_product_admin_i18n.ajaxurl + '?action=mp_variation_popup&variation_id=' + ( $( this ).attr( 'data-popup-id' ) ),
-            opacity: .7,
-            inline: false,
-            width: 400,
-            height: 460,
-            title: $( this ).closest( 'tr' ).find( '.field_more .variation_name' ).html(),
-            onClosed: function() {
-                $.colorbox.remove();
-            },
-            onLoad: function() {
-
-            }
-        } );
-
-
-
-        e.preventDefault();
-        //$.colorbox.remove
-        // return false;
-    } );
-
-    $( document ).on( 'click', '#variant_add', function( e ) {
-        var url = mp_product_admin_i18n.ajaxurl + '?action=ajax_add_new_variant';
-
-        $.post( url, {
-            action: 'ajax_add_new_variant',
-            parent_post_id: $( '#post_ID' ).val(),
-        } ).done( function( data, status ) {
-            var response = jQuery.parseJSON( data );
-
-            if ( response ) {
-                if ( response.type == true ) {
-                    $.colorbox( {
-                        href: mp_product_admin_i18n.ajaxurl + '?action=mp_variation_popup&variation_id=' + response.post_id + '&new_variation',
-                        opacity: .7,
-                        inline: false,
-                        width: 400,
-                        height: 460,
-                        title: '',
-                        onClosed: function() {
-                            $.colorbox.remove();
-                            //tinyMCE.execCommand("mceRepaint");
-                        },
-                        onLoad: function() {
-
-                        }
-                    } );
-                } else {
-                    alert( 'An error occured while trying to create a new variation post' );
+            document.querySelectorAll('.check-column-box:checked').forEach(function(box) {
+                var tr = box.closest('tr');
+                if (tr) tr.remove();
+                save_inline_post_data(box.value, 'delete', '', '');
+            });
+            if (document.querySelectorAll('.check-column-box').length === 0) {
+                var postIdInput = document.querySelector('[name="post_ID"]');
+                if (postIdInput) save_inline_post_data(postIdInput.value, 'delete_variations', '', '');
+                var origPub = document.getElementById('original_publish');
+                if (origPub && origPub.value === 'Publish') {
+                    var saveBtn = document.getElementById('save-post');
+                    if (saveBtn) saveBtn.removeAttribute('disabled');
+                    if (saveBtn) saveBtn.click();
+                }
+                if (origPub && origPub.value === 'Update') {
+                    var pubBtn = document.getElementById('publish');
+                    if (pubBtn) pubBtn.removeAttribute('disabled');
+                    if (pubBtn) pubBtn.click();
                 }
             }
+            e.preventDefault();
+            return false;
+        });
+    });
 
-        } );
-        e.preventDefault();
-    } );
+    // Close/cancel popup (Vanilla JS)
+    document.querySelectorAll('.mp_popup_controls a.cancel').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            if (window.parent && window.parent.jQuery && window.parent.jQuery.colorbox) {
+                window.parent.jQuery.colorbox.close();
+            }
+            e.preventDefault();
+            return false;
+        });
+    });
+
+
+    // Native Modal für Popups
+    function openModal(content, title) {
+        let modal = document.getElementById('mp-vanilla-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'mp-vanilla-modal';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100vw';
+            modal.style.height = '100vh';
+            modal.style.background = 'rgba(0,0,0,0.7)';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.zIndex = '99999';
+            modal.innerHTML = '<div style="background:#fff;max-width:500px;width:90vw;max-height:90vh;overflow:auto;position:relative;padding:2em 1em 1em 1em;border-radius:8px;box-shadow:0 0 20px #0003;">'
+                + '<button id="mp-vanilla-modal-close" style="position:absolute;top:10px;right:10px;font-size:1.5em;">&times;</button>'
+                + '<div id="mp-vanilla-modal-title" style="font-weight:bold;margin-bottom:1em;"></div>'
+                + '<div id="mp-vanilla-modal-content"></div>'
+                + '</div>';
+            document.body.appendChild(modal);
+            modal.querySelector('#mp-vanilla-modal-close').onclick = function() {
+                modal.remove();
+            };
+        }
+        modal.querySelector('#mp-vanilla-modal-title').innerHTML = title || '';
+        modal.querySelector('#mp-vanilla-modal-content').innerHTML = content;
+        modal.style.display = 'flex';
+    }
+
+    // open_ajax Links
+    document.querySelectorAll('a.open_ajax').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            var variationId = link.getAttribute('data-popup-id');
+            var url = mp_product_admin_i18n.ajaxurl + '?action=mp_variation_popup&variation_id=' + variationId;
+            fetch(url)
+                .then(function(resp){ return resp.text(); })
+                .then(function(html){
+                    var tr = link.closest('tr');
+                    var title = '';
+                    if (tr) {
+                        var t = tr.querySelector('.field_more .variation_name');
+                        if (t) title = t.innerHTML;
+                    }
+                    openModal(html, title);
+                });
+            e.preventDefault();
+        });
+    });
+
+    // #variant_add Button
+    var variantAddBtn = document.getElementById('variant_add');
+    if (variantAddBtn) {
+        variantAddBtn.addEventListener('click', function(e) {
+            var url = mp_product_admin_i18n.ajaxurl + '?action=ajax_add_new_variant';
+            var postIdInput = document.getElementById('post_ID');
+            var parent_post_id = postIdInput ? postIdInput.value : '';
+            var formData = new URLSearchParams();
+            formData.append('action', 'ajax_add_new_variant');
+            formData.append('parent_post_id', parent_post_id);
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+            })
+            .then(function(resp){ return resp.text(); })
+            .then(function(data){
+                var response;
+                try { response = JSON.parse(data); } catch(e) { response = {}; }
+                if (response && response.type === true) {
+                    var popupUrl = mp_product_admin_i18n.ajaxurl + '?action=mp_variation_popup&variation_id=' + response.post_id + '&new_variation';
+                    fetch(popupUrl)
+                        .then(function(resp){ return resp.text(); })
+                        .then(function(html){
+                            openModal(html, '');
+                        });
+                } else {
+                    alert('An error occured while trying to create a new variation post');
+                }
+            });
+            e.preventDefault();
+        });
+    }
 
     $( 'body' ).on( 'mp-variation-popup-loaded', function() {
 

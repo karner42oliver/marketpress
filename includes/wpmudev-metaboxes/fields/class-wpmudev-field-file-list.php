@@ -172,4 +172,3 @@ class WPMUDEV_Field_File_List extends WPMUDEV_Field {
 	}
     
 }
-?>

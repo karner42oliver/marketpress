@@ -317,10 +317,7 @@ class MP_Product_Attributes_Admin {
 	 */
 	public static function save_product_attribute( $metabox ) {
 				// DEBUG: POST-Daten und Metabox ausgeben
-				if (defined('WP_DEBUG') && WP_DEBUG) {
-					error_log('MP_Product_Attributes_Admin::save_product_attribute POST: ' . print_r($_POST, true));
-					error_log('MP_Product_Attributes_Admin::save_product_attribute metabox: ' . print_r($metabox, true));
-				}
+				   // Debug-Ausgaben entfernt, um Header-Fehler zu vermeiden
 		global $wpdb;
 
 		$product_atts		 = MP_Product_Attributes::get_instance();
