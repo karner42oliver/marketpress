@@ -77,8 +77,53 @@ class MP_Products_Screen {
 		}
 		add_filter( 'enter_title_here', array( &$this, 'custom_placeholder_title' ), 10, 2 );
 		add_action( 'admin_menu', array( &$this, 'remove_metaboxes' ) );
-		// Füge die Metabox für Produktbilder IMMER hinzu (auch nach Select2-Entfernung)
-		add_action( 'add_meta_boxes', array( &$this, 'add_product_image_metabox' ) );
+		   // Füge die eigene Produktbilder-Metabox (WPMUDEV_Metabox) hinzu
+		   add_action( 'add_meta_boxes', array( $this, 'init_product_images_metabox' ) );
+	}
+
+	/**
+	 * Initialisiert die Produktbilder-Metabox (jQuery-frei, mit Drag & Drop und Mehrfachbildern)
+	 *
+	 * @since 3.0
+	 * @access public
+	 */
+	public function init_product_images_metabox() {
+		$metabox = new WPMUDEV_Metabox( apply_filters( 'mp_metabox_array_mp-product-images-metabox', array(
+			'id'          => 'mp-product-images-metabox',
+			'title'       => sprintf( __( '%1$sProduktbilder%2$s %3$sFüge Produktbilder hinzu. Das erste Bild ist das Hauptbild (Reihenfolge per Drag & Drop änderbar)%2$s', 'mp' ), '<span class="mp_meta_section_title">', '</span>', '<span class="mp_meta_bellow_desc">' ),
+			'post_type'   => MP_Product::get_post_type(),
+			'context'     => 'normal',
+			'conditional' => array(
+				'action'   => 'show',
+				'operator' => 'OR',
+				array(
+					'name'  => 'has_variation',
+					'value' => 'no',
+				),
+				array(
+					'name'  => 'product_type',
+					'value' => 'external',
+				),
+			),
+		) ) );
+
+		$metabox->add_field( 'images', apply_filters( 'mp_add_field_array_product_images', array(
+			'name'        => 'product_images',
+			'label'       => '',
+			'conditional' => array(
+				'action'   => 'hide',
+				'operator' => 'OR',
+				array(
+					'name'  => 'product_type',
+					'value' => 'external',
+				),
+				array(
+					'name'  => 'has_variation',
+					'value' => 'yes',
+				),
+			),
+			'class'       => 'mp_product_images'
+		) ) );
 	}
 
 	/**
