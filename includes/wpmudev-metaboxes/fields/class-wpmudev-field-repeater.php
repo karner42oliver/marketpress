@@ -482,24 +482,29 @@ jQuery(document).ready(function($){
 			}
 		});
 		var newIndex = maxNewIndex + 1;
-		$clonedRow.find('[name]').each(function(){
-			var $this = $(this),
-				name = $this.attr('name').replace('existing', 'new'),
-				nameParts = name.split('['),
-				newName = nameParts[0];
-			for (i = 1; i < (nameParts.length - 1); i++) {
-				var namePart = nameParts[i].replace(']', '');
-				newName += '[' + namePart + ']';
-			}
-			// Reset input value
-			if ($this.attr('data-default-value') !== undefined) {
-				$this.val($this.attr('data-default-value'));
-			} else {
-				$this.val('');
-			}
-			$this.attr('name', newName + '[new][' + newIndex + ']');
-		});
+		   $clonedRow.find('[name]').each(function(){
+			   var $this = $(this);
+			   var name = $this.attr('name');
+			   // Ersetze [existing][irgendwas] oder [new][irgendwas] am Ende durch [new][newIndex]
+			   name = name.replace(/\[(existing|new)\]\[\d+\]$/, '[new][' + newIndex + ']');
+			   name = name.replace(/\[(existing|new)\]\[\]$/, '[new][' + newIndex + ']');
+			   name = name.replace(/\[(existing|new)\]$/, '[new][' + newIndex + ']');
+			   // Falls noch ein "existing" übrig ist (z.B. bei verschachtelten Feldern)
+			   name = name.replace('existing', 'new');
+			   // Reset input value
+			   if ($this.attr('data-default-value') !== undefined) {
+				   $this.val($this.attr('data-default-value'));
+			   } else {
+				   $this.val('');
+			   }
+			   $this.attr('name', name);
+		   });
 		
+
+		// Indexanzeige der neuen Zeile korrekt setzen
+		var currentCount = $subfields.find('.wpmudev-subfield-group').length;
+		$clonedRow.find('.wpmudev-subfield-group-index span').text(currentCount);
+
 		$clonedRow.find('.wpmudev-subfield-inner').show();
 
 		if ( didOne ) {
@@ -517,6 +522,7 @@ jQuery(document).ready(function($){
 		});
 
 		// Nach dem Hinzufügen: Indexanzeige und Namen für alle Zeilen aktualisieren
+		// Nur die neue Zeile bekommt den korrekten Index, dann alle Zeilen neu nummerieren
 		updateOrdering($subfields.find('.wpmudev-subfield-group'));
 
 		/**

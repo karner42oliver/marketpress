@@ -69,7 +69,7 @@ class MP_Product_Attributes {
 		}
 		
 		if ( is_array($id) ) {
-			$wpdb->query('DELETE FROM . ' . $this->get_table_name() . ' WHERE attribute_id IN (' . implode(',', $id) . ')');
+			$wpdb->query('DELETE FROM ' . $this->get_table_name() . ' WHERE attribute_id IN (' . implode(',', $id) . ')');
 		} else {
 			$wpdb->delete($this->get_table_name(), array('attribute_id' => $ids));
 		}

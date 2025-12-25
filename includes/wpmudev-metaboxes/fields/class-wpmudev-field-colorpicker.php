@@ -19,9 +19,9 @@ class WPMUDEV_Field_Colorpicker extends WPMUDEV_Field {
 	 * @since 1.0
 	 * @access public
 	 */
-	public function enqueue_scripts() {
-		wp_enqueue_script('wpmudev-field-colorpicker', WPMUDEV_Metabox::class_url('ui/colorpicker/js/colorpicker.js'), array('jquery'), WPMUDEV_METABOX_VERSION);
-	}
+	   public function enqueue_scripts() {
+		   wp_enqueue_script('wpmudev-field-colorpicker-pickr', WPMUDEV_Metabox::class_url('ui/colorpicker/pickr.min.js'), array(), WPMUDEV_METABOX_VERSION);
+	   }
 	
 	/**
 	 * Enqueue styles
@@ -29,9 +29,9 @@ class WPMUDEV_Field_Colorpicker extends WPMUDEV_Field {
 	 * @since 1.0
 	 * @access public
 	 */
-	public function enqueue_styles() {
-		wp_enqueue_style('wpmudev-field-colorpicker', WPMUDEV_Metabox::class_url('ui/colorpicker/css/colorpicker.css'), array(), WPMUDEV_METABOX_VERSION);
-	}
+	   public function enqueue_styles() {
+		   wp_enqueue_style('wpmudev-field-colorpicker-pickr', WPMUDEV_Metabox::class_url('ui/colorpicker/pickr.min.css'), array(), WPMUDEV_METABOX_VERSION);
+	   }
 
 	/**
 	 * Prints inline javascript
@@ -39,33 +39,59 @@ class WPMUDEV_Field_Colorpicker extends WPMUDEV_Field {
 	 * @since 1.0
 	 * @access public
 	 */	
-	public function print_scripts() {
-		?>
-		<script type="text/javascript">
-		jQuery(document).ready(function($) {
-			$('.wpmudev-field-colorpicker-input').each(function(){
-				var that = $(this);
-				$(this).ColorPicker({
-					"onSubmit": function(hsb, hex, rgb, el) {
-						$(el).val(hex);
-						$(el).ColorPickerHide();
-					},
-					"onBeforeShow": function() {
-						$(this).ColorPickerSetColor(this.value);
-					},
-					"onChange" : function(hsb, hex, rgb) {
-						that.val(hex);
+	   public function print_scripts() {
+		   ?>
+		   <script type="text/javascript">
+		   document.addEventListener('DOMContentLoaded', function() {
+			   document.querySelectorAll('.wpmudev-field-colorpicker-input').forEach(function(input) {
+				   // Container für Pickr erzeugen
+				   var pickrContainer = document.createElement('span');
+				   pickrContainer.className = 'wpmudev-colorpicker-pickr';
+				   input.parentNode.insertBefore(pickrContainer, input.nextSibling);
 
-					}
-				}).on('keyup', function(){
-					$(this).ColorPickerSetColor(this.value);
-				});
-			})
-		});
-		</script>		
-		<?php
-		parent::print_scripts();
-	}
+				   // Pickr initialisieren
+				   var pickr = Pickr.create({
+					   el: pickrContainer,
+					   theme: 'classic',
+					   default: input.value || '#ffffff',
+					   swatches: [
+						   '#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5',
+						   '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50',
+						   '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800',
+						   '#FF5722', '#795548', '#607D8B', '#000000', '#ffffff'
+					   ],
+					   components: {
+						   preview: true,
+						   opacity: true,
+						   hue: true,
+						   interaction: {
+							   hex: true,
+							   rgba: true,
+							   input: true,
+							   save: true
+						   }
+					   }
+				   });
+
+				   // Synchronisiere Pickr mit Input
+				   pickr.on('save', (color) => {
+					   var hex = color.toHEXA().toString();
+					   input.value = hex;
+					   pickr.hide();
+				   });
+				   pickr.on('change', (color) => {
+					   var hex = color.toHEXA().toString();
+					   input.value = hex;
+				   });
+				   input.addEventListener('input', function() {
+					   pickr.setColor(input.value);
+				   });
+			   });
+		   });
+		   </script>
+		   <?php
+		   parent::print_scripts();
+	   }
 	
 	/**
 	 * Displays the field

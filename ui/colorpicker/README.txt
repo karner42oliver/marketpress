@@ -1,0 +1,1 @@
+Alle jQuery-basierten Colorpicker-Dateien wurden entfernt. Die Colorpicker-Integration erfolgt jetzt ausschließlich über Pickr (Vanilla JS).
