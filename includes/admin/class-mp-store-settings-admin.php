@@ -259,55 +259,46 @@ private function __construct() {
 			return;
 		}
 		$updated = false;
-		$title   = __( 'Store Settings', 'mp' ) . ': ';
-
-		switch ( mp_get_current_screen()->id ) {
-			case 'store-settings_page_store-settings-presentation' :
-				$title .= __( 'Presentation', 'mp' );
+		$page = isset($_GET['page']) ? $_GET['page'] : '';
+		switch ($page) {
+			case 'store-settings':
+				$title = __( 'Store Settings: General', 'mp' );
 				break;
-
-			case 'store-settings_page_store-settings-notifications' :
-				$title .= __( 'Notifications', 'mp' );
+			case 'store-settings-presentation':
+				$title = __( 'Store Settings: Presentation', 'mp' );
 				break;
-
-			case 'store-settings_page_store-settings-shipping' :
-				$title .= __( 'Shipping', 'mp' );
+			case 'store-settings-notifications':
+				$title = __( 'Store Settings: Notifications', 'mp' );
 				break;
-
-			case 'store-settings_page_store-settings-payments' :
-				$title .= __( 'Payments', 'mp' );
+			case 'store-settings-shipping':
+				$title = __( 'Store Settings: Shipping', 'mp' );
 				break;
-
-			case 'store-settings_page_store-settings-shortcodes' :
-				$title .= __( 'Short Codes', 'mp' );
+			case 'store-settings-payments':
+				$title = __( 'Store Settings: Payments', 'mp' );
 				break;
-
-			case 'store-settings_page_store-settings-importers' :
-				$title .= __( 'Importers', 'mp' );
+			case 'store-settings-shortcodes':
+				$title = __( 'Store Settings: Short Codes', 'mp' );
 				break;
-
-			case 'store-settings_page_store-settings-exporters' :
-				$title .= __( 'Exporters', 'mp' );
+			case 'store-settings-importers':
+				$title = __( 'Store Settings: Importers', 'mp' );
 				break;
-
-			case 'store-settings_page_store-settings-productattributes' :
-				$title = ( mp_get_get_value( 'action' ) == 'mp_add_product_attribute' ) ? __( 'Add Product Attribute', 'mp' ) : sprintf( __( 'Edit Product Attribute %s', 'mp' ), '<a class="add-new-h2" href="' . admin_url( 'admin.php?page=store-settings-productattributes&amp;action=mp_add_product_attribute' ) . '">' . __( 'Add Attribute', 'mp' ) . '</a>' );
+			case 'store-settings-exporters':
+				$title = __( 'Store Settings: Exporters', 'mp' );
 				break;
-
-			case 'store-settings_page_store-settings-capabilities' :
-				$title .= __( 'Capabilities', 'mp' );
+			case 'store-settings-productattributes':
+				$title = __( 'Product Attributes', 'mp' );
 				break;
-
-			case 'store-settings_page_store-settings-import' :
-	            $title .= __( 'Import/Export', 'mp' );
-	            break;
-
-			case 'store-settings_page_store-setup-wizard' :
+			case 'store-settings-capabilities':
+				$title = __( 'Store Settings: Capabilities', 'mp' );
+				break;
+			case 'store-settings-import':
+				$title = __( 'Store Settings: Import/Export', 'mp' );
+				break;
+			case 'store-setup-wizard':
 				$title = __( 'Quick Setup', 'mp' );
 				break;
-
-			default :
-				$title .= __( 'General', 'mp' );
+			default:
+				$title = __( 'Store Settings', 'mp' );
 				break;
 		}
 		?>
