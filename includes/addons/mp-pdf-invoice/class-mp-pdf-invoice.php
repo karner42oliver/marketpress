@@ -336,12 +336,16 @@ class MP_PDF_Invoice {
 	 */
 	private function strip_tags_address( $address ) {
 		$parts = preg_split( '/<br[^>]*>/i', $address );
-		$parts = array_filter( $parts );
-		foreach ( $parts as $key => $part ) {
-			$parts[ $key ] = strip_tags( $part );
+		$clean = [];
+		$seen = [];
+		foreach ( $parts as $part ) {
+			$stripped = trim(strip_tags($part));
+			if ($stripped !== '' && !in_array($stripped, $seen)) {
+				$clean[] = $stripped;
+				$seen[] = $stripped;
+			}
 		}
-
-		return $parts;
+		return $clean;
 	}
 
 	/**

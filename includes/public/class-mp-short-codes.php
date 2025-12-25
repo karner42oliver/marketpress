@@ -81,8 +81,7 @@ class MP_Short_Codes {
 	 * @access public
 	 */
 	public function shortcodes_frontend_styles_scripts() {
-		wp_enqueue_script( 'lightgallery', mp_plugin_url( 'ui/lightgallery/js/lightgallery.js' ), array( 'jquery' ), MP_VERSION );
-		wp_enqueue_style( 'lightgallery', mp_plugin_url( 'ui/lightgallery/css/lightgallery.css' ), array(), MP_VERSION );
+		// Lightgallery wird nicht mehr verwendet
 		// CSS.
 		wp_enqueue_style( 'mp-base', mp_plugin_url( 'ui/css/marketpress.css' ), false, MP_VERSION );
 
@@ -98,7 +97,7 @@ class MP_Short_Codes {
 		wp_register_script( 'hover-intent', mp_plugin_url( 'ui/js/hoverintent.min.js' ), array( 'jquery' ), MP_VERSION, true );
 		// wp_register_script( 'mp-select2', mp_plugin_url( 'ui/select2/select2.js' ), array( 'jquery' ), MP_VERSION, true );
 		wp_register_script( 'colorbox', mp_plugin_url( 'ui/js/jquery.colorbox-min.js' ), array( 'jquery' ), MP_VERSION, true );
-		wp_enqueue_script( 'mp-frontend', mp_plugin_url( 'ui/js/frontend.js' ), array( 'colorbox', 'hover-intent', 'jquery-validate' ), MP_VERSION, true );
+		wp_enqueue_script( 'mp-frontend', mp_plugin_url( 'ui/js/frontend.js' ), array( 'colorbox', 'hover-intent' ), MP_VERSION, true );
 
 		$grid_with_js = apply_filters('mp-do_grid_with_js', true);
 
@@ -144,11 +143,10 @@ class MP_Short_Codes {
 		wp_enqueue_style( 'colorbox', mp_plugin_url( 'ui/css/colorbox.css' ), false, MP_VERSION );
 
 		// Scripts
-		wp_register_script( 'jquery-validate', mp_plugin_url( 'ui/js/jquery.validate.min.js' ), array( 'jquery' ), MP_VERSION, true );
-		wp_register_script( 'jquery-validate-methods', mp_plugin_url( 'ui/js/jquery.validate.methods.min.js' ), array( 'jquery-validate' ), MP_VERSION, true );
+		// jQuery Validate wird nicht mehr verwendet
 		wp_register_script( 'ajaxq', mp_plugin_url( 'ui/js/ajaxq.min.js' ), array( 'jquery' ), MP_VERSION, true );
 		wp_register_script( 'colorbox', mp_plugin_url( 'ui/js/jquery.colorbox-min.js' ), array( 'jquery' ), MP_VERSION, true );
-		wp_enqueue_script( 'mp-cart', mp_plugin_url( 'ui/js/mp-cart.js' ), array( 'ajaxq', 'colorbox', 'jquery-validate' ), MP_VERSION, true );
+		wp_enqueue_script( 'mp-cart', mp_plugin_url( 'ui/js/mp-cart.js' ), array( 'ajaxq', 'colorbox' ), MP_VERSION, true );
 
 		// Localize scripts
 		wp_localize_script( 'mp-cart', 'mp_cart_i18n', array(

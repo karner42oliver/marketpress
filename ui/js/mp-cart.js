@@ -109,16 +109,27 @@ var mp_cart = { };
 
         $( '.mp-shortcode-wrap' ).on( 'change', '[name^="product_attr_"]', this.updateProductAttributes );
 
-		//We should loop through each form else jQuery validation is passing wrong form ID
-		$( '.mp-shortcode-wrap' ).find( '.mp_buy_button' ).each(function(){
-			$(this).on( 'mp_cart/before_add_item', function( e, item, qty ) {
-				marketpress.loadingOverlay( 'show' );
-			} )
-			.on( 'mp_cart/after_add_item', function( e, resp, item, qty ) {
-				marketpress.loadingOverlay( 'hide' );
-			} )
-			.validate(me.productFormValidationArgs);
-		});
+        // Vanilla JS Validierung für Shortcode-Produktformulare
+        const buyButtons = document.querySelectorAll('.mp-shortcode-wrap .mp_buy_button');
+        buyButtons.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                const form = btn.closest('form');
+                if (!form) return;
+                // Einfache Validierung: Pflichtfelder prüfen
+                let valid = true;
+                form.querySelectorAll('[required]').forEach(function(input) {
+                    if (!input.value) {
+                        input.classList.add('mp_form_input_error');
+                        valid = false;
+                    }
+                });
+                if (!valid) {
+                    e.preventDefault();
+                    return;
+                }
+                marketpress.loadingOverlay('show');
+            });
+        });
 
     };
     /**
@@ -133,24 +144,42 @@ var mp_cart = { };
             $(this).on( 'change', '[name^="product_attr_"]', me.updateProductAttributes );
             $(this).on( 'input', '[name^="product_quantity"]', me.checkProductQuantity );
 
-            $(this).find( '.mp_form-buy-product' ).not('.mp_no_single, .mp_buy_button')
-                .on( 'mp_cart/before_add_item', function( e, item, qty ) {
-                    marketpress.loadingOverlay( 'show' );
-                } )
-                .on( 'mp_cart/after_add_item', function( e, resp, item, qty ) {
-                    marketpress.loadingOverlay( 'hide' );
-                } )
-                .validate( me.productFormValidationArgs );
+            // Vanilla JS Validierung für Single-Produktformulare
+            const buyForms = this.querySelectorAll('.mp_form-buy-product:not(.mp_no_single):not(.mp_buy_button)');
+            buyForms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    let valid = true;
+                    form.querySelectorAll('[required]').forEach(function(input) {
+                        if (!input.value) {
+                            input.classList.add('mp_form_input_error');
+                            valid = false;
+                        }
+                    });
+                    if (!valid) {
+                        e.preventDefault();
+                        return;
+                    }
+                    marketpress.loadingOverlay('show');
+                });
+            });
 
-            $(this).find( '.mp_no_single' ).not( '.mp_buy_button' ).each( function() {
-                $(this).on( 'mp_cart/before_add_item', function( e, item, qty ) {
-                    marketpress.loadingOverlay( 'show' );
-                } )
-                .on( 'mp_cart/after_add_item', function( e, resp, item, qty ) {
-                    marketpress.loadingOverlay( 'hide' );
-                } )
-                .validate( me.productFormValidationArgs );
-            } );
+            const noSingleForms = this.querySelectorAll('.mp_no_single:not(.mp_buy_button)');
+            noSingleForms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    let valid = true;
+                    form.querySelectorAll('[required]').forEach(function(input) {
+                        if (!input.value) {
+                            input.classList.add('mp_form_input_error');
+                            valid = false;
+                        }
+                    });
+                    if (!valid) {
+                        e.preventDefault();
+                        return;
+                    }
+                    marketpress.loadingOverlay('show');
+                });
+            });
 		} );
     };
 
@@ -191,13 +220,28 @@ var mp_cart = { };
      * @event cbox_complete
      */
     mp_cart.initCboxListeners = function() {
-        $( '#mp-product-options-callout-form' )
-            .on( 'mp_cart/after_add_item', function( e, resp ) {
-                if ( resp.success ) {
-                    $.colorbox.close();
+        // Vanilla JS Validierung für das Colorbox-Formular
+        const cboxForm = document.getElementById('mp-product-options-callout-form');
+        if (cboxForm) {
+            cboxForm.addEventListener('submit', function(e) {
+                let valid = true;
+                cboxForm.querySelectorAll('[required]').forEach(function(input) {
+                    if (!input.value) {
+                        input.classList.add('mp_form_input_error');
+                        valid = false;
+                    }
+                });
+                if (!valid) {
+                    e.preventDefault();
+                    return;
                 }
-            } )
-            .validate( this.productFormValidationArgs );
+            });
+            cboxForm.addEventListener('mp_cart/after_add_item', function(e, resp) {
+                if (resp && resp.success && window.jQuery && window.jQuery.colorbox) {
+                    window.jQuery.colorbox.close();
+                }
+            });
+        }
 
         $( '#cboxLoadedContent' ).on( 'change', '[name^="product_attr_"]', this.updateProductAttributes );
     };

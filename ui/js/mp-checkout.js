@@ -163,9 +163,87 @@ mp_checkout = {
    */
   initCheckoutSteps: function () {
     var checkoutForm = document.getElementById("mp-checkout-form");
+    // Validierung beim Klick auf Next Step Button (auch wenn kein Submit erfolgt)
+    if (checkoutForm) {
+      checkoutForm.querySelectorAll('.mp_button-checkout-next-step').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          // Nur Felder im aktuellen Schritt prüfen
+          const current = checkoutForm.querySelector('.mp_form-checkout .current');
+          let valid = true;
+          let firstInvalid = null;
+          if (current) {
+            current.querySelectorAll('[required], .mp_field_required').forEach(function(input) {
+              let el = input;
+              if (el.tagName === 'SPAN' && el.classList.contains('mp_field_required')) {
+                el = el.closest('.mp_checkout_field').querySelector('input, select, textarea');
+              }
+              // Hinweis-Element suchen oder erstellen
+              let hint = null;
+              if (el) {
+                hint = el.closest('.mp_checkout_field')?.querySelector('.mp_field_required_hint');
+              }
+              if (el && !el.value) {
+                el.classList.add('mp_form_input_error');
+                valid = false;
+                if (!firstInvalid) firstInvalid = el;
+                if (!hint) {
+                  hint = document.createElement('span');
+                  hint.className = 'mp_field_required_hint';
+                  hint.style.color = 'red';
+                  hint.style.display = 'block';
+                  hint.style.fontSize = '0.9em';
+                  hint.textContent = 'Dieses Feld ist erforderlich';
+                  el.parentNode.appendChild(hint);
+                } else {
+                  hint.style.display = 'block';
+                }
+              } else if (el) {
+                el.classList.remove('mp_form_input_error');
+                if (hint) {
+                  hint.style.display = 'none';
+                }
+              }
+            });
+          }
+          if (!valid) {
+            e.preventDefault();
+            alert('Bitte fülle alle benötigten Felder aus!');
+            if (firstInvalid) firstInvalid.focus();
+          }
+        });
+      });
+    }
+        // Validierung beim Klick auf Next Step (Submit-Button)
+        if (checkoutForm) {
+          checkoutForm.addEventListener('submit', function(e) {
+            let valid = true;
+            let firstInvalid = null;
+            // Prüfe ALLE Pflichtfelder im gesamten Formular
+            checkoutForm.querySelectorAll('[required], .mp_field_required').forEach(function(input) {
+              let el = input;
+              if (el.tagName === 'SPAN' && el.classList.contains('mp_field_required')) {
+                el = el.closest('.mp_checkout_field').querySelector('input, select, textarea');
+              }
+              if (el && !el.value) {
+                el.classList.add('mp_form_input_error');
+                valid = false;
+                if (!firstInvalid) firstInvalid = el;
+              } else if (el) {
+                el.classList.remove('mp_form_input_error');
+              }
+            });
+            if (!valid) {
+              e.preventDefault();
+              alert('Bitte fülle alle benötigten Felder aus!');
+              if (firstInvalid) firstInvalid.focus();
+            }
+          });
+        }
+    var checkoutForm = document.getElementById("mp-checkout-form");
     if (!checkoutForm) return;
 
-    // Schrittwechsel per Klick auf Überschrift
+
+    // Schrittwechsel per Klick auf Überschrift mit Pflichtfeld-Validierung
     checkoutForm
       .querySelectorAll(".mp_checkout_section_heading-link")
       .forEach((link) => {
@@ -174,6 +252,31 @@ mp_checkout = {
           const current = checkoutForm.querySelector(
             ".mp_form-checkout .current",
           );
+          // Prüfe Pflichtfelder im aktuellen Schritt
+          let valid = true;
+          let firstInvalid = null;
+          if (current) {
+            current.querySelectorAll('[required], .mp_field_required').forEach(function(input) {
+              let el = input;
+              // Falls .mp_field_required ein <span> ist, hole das zugehörige Input-Feld
+              if (el.tagName === 'SPAN' && el.classList.contains('mp_field_required')) {
+                el = el.closest('.mp_checkout_field').querySelector('input, select, textarea');
+              }
+              if (el && !el.value) {
+                el.classList.add('mp_form_input_error');
+                valid = false;
+                if (!firstInvalid) firstInvalid = el;
+              } else if (el) {
+                el.classList.remove('mp_form_input_error');
+              }
+            });
+          }
+          if (!valid) {
+            e.preventDefault();
+            alert('Bitte fülle alle benötigten Felder aus!');
+            if (firstInvalid) firstInvalid.focus();
+            return;
+          }
           if (current) {
             mp_checkout.changeStep(current, section);
           }
@@ -448,9 +551,54 @@ mp_checkout = {
 document.addEventListener("DOMContentLoaded", function () {
   mp_checkout.showForm && mp_checkout.showForm();
   mp_checkout.initListeners && mp_checkout.initListeners();
-  mp_checkout.toggleShippingAddressFields &&
-    mp_checkout.toggleShippingAddressFields();
-  mp_checkout.toggleRegistrationFields &&
-    mp_checkout.toggleRegistrationFields();
+  mp_checkout.toggleShippingAddressFields && mp_checkout.toggleShippingAddressFields();
+  mp_checkout.toggleRegistrationFields && mp_checkout.toggleRegistrationFields();
   mp_checkout.triggerStepChange && mp_checkout.triggerStepChange();
+
+  // Pflichtfeld-Validierung direkt beim Laden der Seite und nach Autofill
+  var checkoutForm = document.getElementById("mp-checkout-form");
+  function validateRequiredFields() {
+    if (checkoutForm) {
+      checkoutForm.querySelectorAll('[required], .mp_field_required').forEach(function(input) {
+        let el = input;
+        if (el.tagName === 'SPAN' && el.classList.contains('mp_field_required')) {
+          el = el.closest('.mp_checkout_field').querySelector('input, select, textarea');
+        }
+        let hint = null;
+        if (el) {
+          hint = el.closest('.mp_checkout_field')?.querySelector('.mp_field_required_hint');
+        }
+        if (el && !el.value) {
+          el.classList.add('mp_form_input_error');
+          if (!hint) {
+            hint = document.createElement('span');
+            hint.className = 'mp_field_required_hint';
+            hint.style.color = 'red';
+            hint.style.display = 'block';
+            hint.style.fontSize = '0.9em';
+            hint.textContent = 'Dieses Feld ist erforderlich';
+            el.parentNode.appendChild(hint);
+          } else {
+            hint.style.display = 'block';
+          }
+        } else if (el) {
+          el.classList.remove('mp_form_input_error');
+          if (hint) {
+            hint.style.display = 'none';
+          }
+        }
+      });
+    }
+  }
+  validateRequiredFields();
+  // Nach jedem Input/Change/Autofill Pflichtfelder prüfen
+  if (checkoutForm) {
+    checkoutForm.querySelectorAll('input, select, textarea').forEach(function(input) {
+      input.addEventListener('input', validateRequiredFields);
+      input.addEventListener('change', validateRequiredFields);
+      input.addEventListener('blur', validateRequiredFields);
+    });
+  }
+  // Nach Seitenreload (z.B. durch Browser-Autofill)
+  window.addEventListener('pageshow', validateRequiredFields);
 });

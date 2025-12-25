@@ -62,6 +62,7 @@ abstract class AbstractRenderer
      */
     protected function _render_background(Frame $frame, array $border_box): void
     {
+        $style = $frame->get_style();
         $color = $style->background_color;
         $image = $style->background_image;
         [$x, $y, $w, $h] = $border_box;

@@ -805,10 +805,9 @@ class MP_Checkout {
 			return;
 		}
 
-		wp_register_script( 'jquery-validate', mp_plugin_url( 'ui/js/jquery.validate.min.js' ), array( 'jquery' ), MP_VERSION, true );
-		wp_register_script( 'jquery-validate-methods', mp_plugin_url( 'ui/js/jquery.validate.methods.min.js' ), array( 'jquery', 'jquery-validate' ), MP_VERSION, true );
+		// jQuery Validate wird nicht mehr verwendet
 		wp_register_script( 'jquery-payment', mp_plugin_url( 'ui/js/jquery.payment.min.js' ), array( 'jquery' ), MP_VERSION, true );
-		wp_enqueue_script( 'mp-checkout', mp_plugin_url( 'ui/js/mp-checkout.js' ), array( 'jquery-payment', 'jquery-validate-methods' ), MP_VERSION, true );
+		wp_enqueue_script( 'mp-checkout', mp_plugin_url( 'ui/js/mp-checkout.js' ), array( 'jquery-payment' ), MP_VERSION, true );
 
 		wp_localize_script( 'mp-checkout', 'mp_checkout_i18n', array(
 			'cc_num'		 => __( 'Please enter a valid credit card number', 'mp' ),
