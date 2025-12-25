@@ -152,6 +152,15 @@ class MP_Shortcode_Builder {
 	 * @access public
 	 */
 	public function display_short_code_form() {
+		// Shortcodes initialisieren
+		$shortcodes = array(
+			'mp_list_categories' => __( 'Display a list of product categories.', 'mp' ),
+			'mp_list_products'   => __( 'Display a list or grid of products.', 'mp' ),
+			'mp_product'         => __( 'Display a single product.', 'mp' ),
+			'mp_cart'            => __( 'Display the shopping cart.', 'mp' ),
+			'mp_checkout'        => __( 'Display the checkout form.', 'mp' ),
+			'mp_order_status'    => __( 'Display the order status.', 'mp' ),
+		);
 		if ( did_action( 'media_buttons' ) == 0 ) {
 			// Only continue if a tinymce editor exists on the current page
 			return;

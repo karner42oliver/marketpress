@@ -68,26 +68,37 @@ class MP_Store_Settings_Presentation {
 		}
 		?>
 		<script type="text/javascript">
-			jQuery(document).ready(function ($) {
-				$('.mp-create-page-button').on('click', function (e) {
+		document.addEventListener('DOMContentLoaded', function () {
+			document.querySelectorAll('.mp-create-page-button').forEach(function(btn) {
+				btn.addEventListener('click', function(e) {
 					e.preventDefault();
-
-					var $this = $(this),
-						$select = $this.siblings('[name^="pages"]');
-
-					$this.isWorking(true);
-
-					$.getJSON($this.attr('href'), function (resp) {
-						if (resp.success) {
-							$select.attr('data-select2-value', resp.data.select2_value).mp_select2('val', resp.data.post_id).trigger('change');
-							$this.isWorking(false).replaceWith(resp.data.button_html);
-						} else {
-							alert('<?php _e( 'An error occurred while creating the store page. Please try again.', 'mp' ); ?>');
-							$this.isWorking(false);
-						}
-					});
+					btn.classList.add('working');
+					fetch(btn.getAttribute('href'))
+						.then(response => response.json())
+						.then(resp => {
+							if (resp.success) {
+								// Dropdown aktualisieren (SlimSelect oder native)
+								var select = btn.parentNode.querySelector('[name^="pages"]');
+								if (select) {
+									select.value = resp.data.post_id;
+									if (window.SlimSelect && select.slim) {
+										select.slim.set(resp.data.post_id);
+									} else {
+										// Native select: Trigger change event
+										var event = new Event('change', { bubbles: true });
+										select.dispatchEvent(event);
+									}
+								}
+								btn.classList.remove('working');
+								btn.outerHTML = resp.data.button_html;
+							} else {
+								alert('<?php _e( 'An error occurred while creating the store page. Please try again.', 'mp' ); ?>');
+								btn.classList.remove('working');
+							}
+						});
 				});
 			});
+		});
 		</script>
 		<?php
 	}

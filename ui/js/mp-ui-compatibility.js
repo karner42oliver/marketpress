@@ -10,19 +10,8 @@
 (function($) {
     'use strict';
     
-    // Check if jQuery UI is available
-    var hasJQueryUI = typeof $.ui !== 'undefined';
-    
-    // Configuration from PHP
-    var config = window.mpUIConfig || {};
-    
-    // Initialize compatibility layer
+    // Initialisiere nur moderne Komponenten, keine jQuery UI Prüfung oder Fallback!
     function initCompatibility() {
-        if (hasJQueryUI) {
-            return;
-        }
-        
-        // Load compatibility shims
         initDatepicker();
         initSortable();
         initTooltip();
@@ -226,8 +215,7 @@
      */
     $(document).ready(function() {
         initCompatibility();
-        
-        // Add CSS for compatibility
+        // Add CSS für die modernen Komponenten
         var css = `
             .sortable-ghost {
                 opacity: 0.4;
@@ -261,7 +249,6 @@
                 border-top: none;
             }
         `;
-        
         $('<style>').text(css).appendTo('head');
     });
     
