@@ -134,7 +134,7 @@ class MP_Coupons_Addon {
 			}
 
 			// Get coupon code value
-			add_filter( 'wpmudev_field/before_get_value/coupon_code', array( &$this, 'get_coupon_code_value' ), 10, 4 );
+			add_filter( 'psource_field/before_get_value/coupon_code', array( &$this, 'get_coupon_code_value' ), 10, 4 );
 			add_action( 'user_has_cap', array( &$this, 'user_has_cap' ), 10, 4 );
 
 			add_filter( 'post_row_actions', array( &$this, 'remove_row_actions' ), 10, 2 );
@@ -215,9 +215,9 @@ class MP_Coupons_Addon {
 			return false;
 		}
 
-		//include WPMUDEV Metaboxes/Fields
-		include_once mp_plugin_dir( 'includes/wpmudev-metaboxes/class-wpmudev-field.php' );
-		mp_include_dir( mp_plugin_dir( 'includes/wpmudev-metaboxes/fields' ) );
+		//include PSOURCE Metaboxes/Fields
+		include_once mp_plugin_dir( 'includes/psource-metaboxes/class-psource-field.php' );
+		mp_include_dir( mp_plugin_dir( 'includes/psource-metaboxes/fields' ) );
 
 		foreach ( $coupons as $code => $coupon ) {
 			$type = isset( $coupon['applies_to']['type'] ) ? $coupon['applies_to']['type'] : 'all';
@@ -225,39 +225,39 @@ class MP_Coupons_Addon {
 
 			$metadata = array(
 				'discount'     => array(
-					'type'  => 'WPMUDEV_Field_Text',
+					'type'  => 'PSOURCE_Field_Text',
 					'value' => ( $coupon['discount_type'] == 'pct' ) ? $coupon['discount'] . '%' : $coupon['discount'],
 				),
 				'max_uses'     => array(
-					'type'  => 'WPMUDEV_Field_Text',
+					'type'  => 'PSOURCE_Field_Text',
 					'value' => $coupon['uses'],
 				),
 				'applies_to'   => array(
-					'type'  => 'WPMUDEV_Field_Radio_Group',
+					'type'  => 'PSOURCE_Field_Radio_Group',
 					'value' => $type,
 				),
 				'applies_to'   => array(
-					'type'  => 'WPMUDEV_Field_Radio_Group',
+					'type'  => 'PSOURCE_Field_Radio_Group',
 					'value' => 'item',
 				),
 				'category'     => array(
-					'type'  => 'WPMUDEV_Field_Taxonomy_Select',
+					'type'  => 'PSOURCE_Field_Taxonomy_Select',
 					'value' => ( $type == 'category' ) ? $id : '',
 				),
 				'product'      => array(
-					'type'  => 'WPMUDEV_Field_Post_Select',
+					'type'  => 'PSOURCE_Field_Post_Select',
 					'value' => ( $type == 'product' ) ? $id : '',
 				),
 				'start_date'   => array(
-					'type'  => 'WPMUDEV_Field_Datepicker',
+					'type'  => 'PSOURCE_Field_Datepicker',
 					'value' => date( 'Y-m-d', $coupon['start'] ),
 				),
 				'has_end_date' => array(
-					'type'  => 'WPMUDEV_Field_Checkbox',
+					'type'  => 'PSOURCE_Field_Checkbox',
 					'value' => ( empty( $coupon['end'] ) ) ? '0' : '1',
 				),
 				'end_date'     => array(
-					'type'  => 'WPMUDEV_Field_Datepicker',
+					'type'  => 'PSOURCE_Field_Datepicker',
 					'value' => ( empty( $coupon['end'] ) ) ? '' : date( 'Y-m-d', $coupon['end'] ),
 				),
 			);
@@ -448,7 +448,7 @@ class MP_Coupons_Addon {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @action wpmudev_field_get_value_coupon_code
+	 * @action psource_field_get_value_coupon_code
 	 * @return string
 	 */
 	public function get_coupon_code_value( $value, $post_id, $raw, $field ) {
@@ -573,7 +573,7 @@ class MP_Coupons_Addon {
 	 * @action init
 	 */
 	public function init_metaboxes() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'        => 'mp-coupons-metabox',
 			'title'     => __( 'Coupon Settings', 'mp' ),
 			'post_type' => 'mp_coupon',
@@ -767,7 +767,7 @@ class MP_Coupons_Addon {
 	 * @action init
 	 */
 	public function init_settings_metaboxes() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => 'mp-coupons-settings-metabox',
 			'title'       => __( 'Gutscheineinstellungen', 'mp' ),
 			'page_slugs'  => array( 'store-settings-addons' ),

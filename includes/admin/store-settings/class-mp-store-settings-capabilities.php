@@ -45,7 +45,7 @@ class MP_Store_Settings_Capabilities {
 				continue;
 			}
 			
-			$metabox = new WPMUDEV_Metabox(array(
+			$metabox = new PSOURCE_Metabox(array(
 				'id' => 'mp-settings-capabilities-' . $role_name,
 				'page_slugs' => array('store-settings-capabilities'),
 				'title' => sprintf(__('%s Capabilities', 'mp'), $role['name']),
@@ -65,7 +65,7 @@ class MP_Store_Settings_Capabilities {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @action wpmudev_metabox/after_all_settings_metaboxes_saved/store-settings-capabilities
+	 * @action psource_metabox/after_all_settings_metaboxes_saved/store-settings-capabilities
 	 */
 	public function save_user_caps() {
 		$roles = get_editable_roles();
@@ -96,7 +96,7 @@ class MP_Store_Settings_Capabilities {
 	 */
 	private function __construct() {
 		add_action('init', array(&$this, 'init_metaboxes'));
-		add_action('wpmudev_metabox/after_all_settings_metaboxes_saved/store-settings-capabilities', array(&$this, 'save_user_caps'));
+		add_action('psource_metabox/after_all_settings_metaboxes_saved/store-settings-capabilities', array(&$this, 'save_user_caps'));
 	}
 }
 

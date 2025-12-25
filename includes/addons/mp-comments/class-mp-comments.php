@@ -89,7 +89,7 @@ class MP_MARKETPRESS_COMMENTS_Addon {
      * @action init
      */
     public function init_settings_metaboxes() {
-        $metabox = new WPMUDEV_Metabox(array(
+        $metabox = new PSOURCE_Metabox(array(
             'id'          => 'mp-comments-settings-metabox',
             'title'       => __('Bewertungseinstellungen', 'mp'),
             'page_slugs'  => array('store-settings-addons'),

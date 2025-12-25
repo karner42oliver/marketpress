@@ -232,7 +232,7 @@ class MP_Coupon {
 
 		$value = false;
 		if ( function_exists( 'get_field_value' ) ) {
-			// Try to get WPMUDEV_Field value
+			// Try to get PSOURCE_Field value
 			$value = get_field_value( $name, $this->ID, $raw );
 		}
 

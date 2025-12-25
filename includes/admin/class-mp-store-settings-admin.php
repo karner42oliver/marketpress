@@ -45,7 +45,7 @@ private function __construct() {
 
     if ( mp_get_get_value( 'action' ) == 'mp_add_product_attribute' || mp_get_get_value( 'action' ) == 'mp_edit_product_attribute' ) {
         MP_Product_Attributes_Admin::add_product_attribute_metaboxes();
-        add_action( 'wpmudev_metabox/before_save_fields/mp-store-settings-product-attributes-add', array( 'MP_Product_Attributes_Admin', 'save_product_attribute' ) );
+        add_action( 'psource_metabox/before_save_fields/mp-store-settings-product-attributes-add', array( 'MP_Product_Attributes_Admin', 'save_product_attribute' ) );
 
         // Dynamisch die aktuelle Screen-ID holen und Action registrieren
         add_action( 'current_screen', function() {
@@ -56,7 +56,7 @@ private function __construct() {
         });
 
         if ( mp_get_get_value( 'action' ) == 'mp_edit_product_attribute' ) {
-            add_filter( 'wpmudev_field/before_get_value', array( 'MP_Product_Attributes_Admin', 'get_product_attribute_value' ), 10, 4 );
+            add_filter( 'psource_field/before_get_value', array( 'MP_Product_Attributes_Admin', 'get_product_attribute_value' ), 10, 4 );
         }
     } else {
     // Dynamisch für alle relevanten Screens die Action registrieren
@@ -79,7 +79,7 @@ private function __construct() {
     });
 }
 
-    add_action( 'wpmudev_metabox/after_settings_metabox_saved/mp-settings-presentation-pages-slugs', array( $this, 'reset_store_pages_cache' ) );
+    add_action( 'psource_metabox/after_settings_metabox_saved/mp-settings-presentation-pages-slugs', array( $this, 'reset_store_pages_cache' ) );
 }
 
 	/**
@@ -152,7 +152,7 @@ private function __construct() {
 			add_submenu_page( 'store-settings', __( 'Quick Setup', 'mp' ), __( 'Quick Setup', 'mp' ), $cap, 'store-setup-wizard', array( &$this, 'display_settings_form' ) );
 		}
 	
-		if ( !WPMUDEV_REMOVE_BRANDING ) {
+		if ( !PSOURCE_REMOVE_BRANDING ) {
 			add_action( 'load-toplevel_page_store-settings', array( &$this, 'add_help_tab' ) );
 			add_action( 'store-settings_page_store-settings-presentation', array( &$this, 'add_help_tab' ) );
 			add_action( 'store-settings_page_store-settings-notifications', array( &$this, 'add_help_tab' ) );
@@ -320,11 +320,11 @@ private function __construct() {
 				<form id="mp-main-form" method="post" action="<?php echo add_query_arg( array() ); ?>">
 					<?php
 					/**
-					 * Render WPMUDEV Metabox settings
+					 * Render PSOURCE Metabox settings
 					 *
 					 * @since 3.0
 					 */
-					do_action( 'wpmudev_metabox/render_settings_metaboxes' );
+					do_action( 'psource_metabox/render_settings_metaboxes' );
 
 					/**
 					 * Render settings
@@ -347,7 +347,7 @@ private function __construct() {
 	 */
     public function reset_store_pages_cache( $metabox ){
 
-		if( ! $metabox instanceof WPMUDEV_Metabox ){
+		if( ! $metabox instanceof PSOURCE_Metabox ){
 			return;
 		}
 

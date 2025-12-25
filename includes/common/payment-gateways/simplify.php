@@ -63,7 +63,7 @@ class MP_Gateway_Simplify extends MP_Gateway_API {
 	 * @access public
 	 */
 	public function init_settings_metabox() {
-		$metabox = new WPMUDEV_Metabox(array(
+		$metabox = new PSOURCE_Metabox(array(
 			'id' => $this->generate_metabox_id(),
 			'page_slugs' => array('store-settings-payments', 'store-settings_page_store-settings-payments'),
 			'title' => sprintf(__('%s Settings', 'mp'), $this->admin_name),
@@ -81,7 +81,7 @@ class MP_Gateway_Simplify extends MP_Gateway_API {
 			'desc' => __('Login to Simplify to <a target="_blank" href="https://www.simplify.com/commerce/app#/account/apiKeys">get your API credentials</a>. Enter your test credentials, then live ones when ready.', 'mp'),
 		));
 		
-		if ( $creds instanceof WPMUDEV_Field ) {
+		if ( $creds instanceof PSOURCE_Field ) {
 			$creds->add_field('text', array(
 				'name' => 'public_key',
 				'label' => array('text' => __('Public Key', 'mp')),

@@ -256,7 +256,7 @@ class MP_Admin {
 					'bulk_update_inventory_single_title'	 => sprintf( __( 'Update inventory for %s product variant', 'mp' ), '<span class="mp_variants_selected"></span>' ),
 					'bulk_delete_multiple_title'			 => sprintf( __( 'Delete %s product variants', 'mp' ), '<span class="mp_variants_selected"></span>' ),
 					'bulk_delete_single_title'				 => sprintf( __( 'Delete %s product variant', 'mp' ), '<span class="mp_variants_selected"></span>' ),
-					'date_format'							 => WPMUDEV_Field_Datepicker::format_date_for_jquery( get_option( 'date_format' ) ),
+					'date_format'							 => PSOURCE_Field_Datepicker::format_date_for_jquery( get_option( 'date_format' ) ),
 					'message_valid_number_required'			 => __( 'Valid number is required', 'mp' ),
 					'message_input_required'				 => __( 'Input is required', 'mp' ),
 					'saving_message'						 => __( 'Please wait...saving in progress...', 'mp' ),

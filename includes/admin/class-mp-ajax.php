@@ -156,7 +156,7 @@ class MP_Ajax {
 					<input type="hidden" name="ajax_nonce" value="<?php echo esc_attr( wp_create_nonce( "mp-ajax-nonce" ) ); ?>" />
 
 					<div class="mp-product-field-25 mp-variation-field vtop mp-variation-image">
-						<div class="wpmudev-field-label"><a href="#" class="remove_popup_image"><?php _e( 'Remove Image', 'mp' ); ?></a></div>
+						<div class="psource-field-label"><a href="#" class="remove_popup_image"><?php _e( 'Remove Image', 'mp' ); ?></a></div>
 						<?php
 						if ( has_post_thumbnail( $variation_id ) ) {
 							echo get_the_post_thumbnail( $variation_id, array( 75, 75 ) );
@@ -171,17 +171,17 @@ class MP_Ajax {
 					<?php do_action( 'mp_variation_popup_after_image' ); ?>
 
 					<div class="mp-product-field-75 mp-variation-field mp-product-field-last">
-						<div class="wpmudev-field-label"><?php _e( 'SKU', 'mp' ); ?> <span class="mp_meta_small_desc"><?php _e( '(Stock Keeping Unit)', 'mp' ); ?></span></div>
+						<div class="psource-field-label"><?php _e( 'SKU', 'mp' ); ?> <span class="mp_meta_small_desc"><?php _e( '(Stock Keeping Unit)', 'mp' ); ?></span></div>
 						<input type="text" name="sku" class="mp-product-field-98 mp-blank-bg" placeholder="<?php esc_attr_e( 'Enter SKU', 'mp' ); ?>" value="<?php echo esc_attr( MP_Product::get_variation_meta( $variation_id, 'sku' ) ); ?>">
 
-						<div class="wpmudev-field-label"><?php _e( 'Price', 'mp' ); ?><span class="required">*</span></div>
+						<div class="psource-field-label"><?php _e( 'Price', 'mp' ); ?><span class="required">*</span></div>
 						<input type="text" name="regular_price" id="regular_price" class="mp-product-field-98 mp-blank-bg mp-numeric mp-required" placeholder="<?php esc_attr_e( 'Enter Price', 'mp' ); ?>" value="<?php echo esc_attr( MP_Product::get_variation_meta( $variation_id, 'regular_price' ) ); ?>">
 					</div>
 					<?php do_action( 'mp_variation_popup_after_sku_and_price' ); ?>
 
 					<?php if ( $product_type == 'external' ) {//show these fields only for External URL Products ?>
 						<div class="mp-product-field-100 mp-variation-field">
-							<div class="wpmudev-field-label"><?php _e( 'External Product URL', 'mp' ); ?><span class="required">*</span></div>
+							<div class="psource-field-label"><?php _e( 'External Product URL', 'mp' ); ?><span class="required">*</span></div>
 							<input type="text" name="external_url" id="external_url" class="mp-required" placeholder="<?php esc_attr_e( 'http://', 'mp' ); ?>" value="<?php echo esc_attr( MP_Product::get_variation_meta( $variation_id, 'external_url' ) ); ?>">
 						</div>
 					<?php } ?>
@@ -189,7 +189,7 @@ class MP_Ajax {
 
 					<?php if ( $product_type == 'digital' ) {//show these fields only for Digital Products ?>
 						<div class="mp-product-field-100 mp-variation-field">
-							<div class="wpmudev-field-label"><?php _e( 'File URL', 'mp' ); ?><span class="required">*</span></div>
+							<div class="psource-field-label"><?php _e( 'File URL', 'mp' ); ?><span class="required">*</span></div>
 							<input type="text" name="file_url" id="file_url" class="mp-required" placeholder="<?php esc_attr_e( 'http://', 'mp' ); ?>" value="<?php echo esc_attr( MP_Product::get_variation_meta( $variation_id, 'file_url' ) ); ?>">
 							<input type="button" name="file_url_button" id="file_url_button" value="<?php echo esc_attr( __( 'Browse', 'mp' ) ); ?>" />
 						</div>
@@ -202,7 +202,7 @@ class MP_Ajax {
 						$child_term	 = isset( $child_term[ 0 ] ) ? $child_term[ 0 ] : '';
 						?>
 						<div class="mp-product-field-100 mp-variation-field">
-							<div class="wpmudev-field-label"><?php echo $product_attributes_array[ $variation_attribute ]; ?><span class="required">*</span></div>
+							<div class="psource-field-label"><?php echo $product_attributes_array[ $variation_attribute ]; ?><span class="required">*</span></div>
 							<input type="text" name="product_attr_<?php echo esc_attr( $variation_attribute ); ?>" id="product_attr_<?php echo esc_attr( $variation_attribute ); ?>" class="mp-required" placeholder="<?php
 							esc_attr_e( 'Enter ', 'mp' );
 							echo esc_attr( $product_attributes_array[ $variation_attribute ] );
@@ -219,7 +219,7 @@ class MP_Ajax {
 						$child_term	 = isset( $child_term[ 0 ] ) ? $child_term[ 0 ] : '';
 						?>
 						<div class="mp-product-field-100 mp-variation-field">
-							<div class="wpmudev-field-label"><?php echo $product_attributes_array[ $variation_attribute ]; ?></div>
+							<div class="psource-field-label"><?php echo $product_attributes_array[ $variation_attribute ]; ?></div>
 							<input type="text" name="product_attr_<?php echo esc_attr( $variation_attribute ); ?>" id="product_attr_<?php echo esc_attr( $variation_attribute ); ?>" class="mp-not-required" placeholder="<?php
 							esc_attr_e( 'Enter ', 'mp' );
 							echo esc_attr( $product_attributes_array[ $variation_attribute ] );
@@ -235,7 +235,7 @@ class MP_Ajax {
 								<span><?php _e( 'Limit the Amount of Items per Order', 'mp' ); ?></span>
 							</label>
 							<fieldset id="fieldset_has_per_order_limit" class="has_area">
-								<div class="wpmudev-field-label"><?php _e( 'Limit Per Order', 'mp' ); ?><span class="required">*</span></div>
+								<div class="psource-field-label"><?php _e( 'Limit Per Order', 'mp' ); ?><span class="required">*</span></div>
 								<input type="text" name="per_order_limit" id="per_order_limit" class="mp-product-field-98 mp-numeric" placeholder="<?php esc_attr_e( 'Unlimited', 'mp' ); ?>" value="<?php echo esc_attr( MP_Product::get_variation_meta( $variation_id, 'per_order_limit' ) ); ?>">
 							</fieldset>
 						</div>
@@ -269,7 +269,7 @@ class MP_Ajax {
 								<span><?php _e( 'Charge Taxes (Special Rate)', 'mp' ); ?></span>
 							</label>
 							<fieldset id="fieldset_charge_tax" class="has_area">
-								<div class="wpmudev-field-desc"><?php _e( 'If you would like this product to use a special tax rate, enter it here. If you omit the "%" symbol the rate will be calculated as a fixed amount for each of this product in the user\'s cart.', 'mp' ); ?></div>
+								<div class="psource-field-desc"><?php _e( 'If you would like this product to use a special tax rate, enter it here. If you omit the "%" symbol the rate will be calculated as a fixed amount for each of this product in the user\'s cart.', 'mp' ); ?></div>
 								<?php _e( 'Special Tax Rate', 'mp' ); ?>
 								<input placeholder="<?php esc_attr_e( 'Tax Rate', 'mp' ); ?>" type="text" name="special_tax_rate" value="<?php echo esc_attr( MP_Product::get_variation_meta( $variation_id, 'special_tax_rate' ) ); ?>">
 								<br>

@@ -933,7 +933,7 @@ class Marketpress {
 	 * @access public
 	 */
 	public function includes() {
-		require_once $this->plugin_dir( 'includes/wpmudev-metaboxes/wpmudev-metabox.php' );
+		require_once $this->plugin_dir( 'includes/psource-metaboxes/psource-metabox.php' );
 		require_once $this->plugin_dir( 'includes/common/class-mp-mailer.php' );
 		require_once $this->plugin_dir( 'includes/common/helpers.php' );
 		require_once $this->plugin_dir( 'includes/common/class-mp-product-attributes.php' );

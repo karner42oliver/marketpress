@@ -354,7 +354,7 @@ class MP_Gateway_eWay_Shared extends MP_Gateway_API {
    * @access public
    */
   public function init_settings_metabox() {
-  	$metabox = new WPMUDEV_Metabox(array(
+  	$metabox = new PSOURCE_Metabox(array(
 			'id' => $this->generate_metabox_id(),
 			'page_slugs' => array('store-settings-payments', 'store-settings_page_store-settings-payments'),
 			'title' => sprintf(__('%s Settings', 'mp'), $this->admin_name),
@@ -389,7 +389,7 @@ class MP_Gateway_eWay_Shared extends MP_Gateway_API {
 			'label' => array('text' => __('Live API Credentials', 'mp')),
 		));
 		
-		if ( $creds instanceof WPMUDEV_Field ) {
+		if ( $creds instanceof PSOURCE_Field ) {
 			$creds->add_field('text', array(
 				'name' => 'UserName',
 				'label' => array('text' => __('Username', 'mp')),
@@ -451,7 +451,7 @@ class MP_Gateway_eWay_Shared extends MP_Gateway_API {
 		
 	  //build args
 	  $args = array();
-	  $args['user-agent'] = 'MarketPress/' . MP_VERSION . ': http://premium.wpmudev.org/project/e-commerce | eWay Shared Payments Gateway/' . MP_VERSION;
+	  $args['user-agent'] = 'MarketPress/' . MP_VERSION . ': http://premium.psource.org/project/e-commerce | eWay Shared Payments Gateway/' . MP_VERSION;
 	  $args['sslverify'] = false;
 	  $args['timeout'] = mp_get_api_timeout( $this->plugin_name );
 

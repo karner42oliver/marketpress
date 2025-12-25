@@ -35,19 +35,19 @@ class MP_Gateway_FREE_Orders extends MP_Gateway_API {
 		$public_name		 = $this->get_setting( 'name', __( 'Free Order', 'mp' ) );
 		$this->public_name	 = empty( $public_name ) ? __( 'Free Order', 'mp' ) : $public_name;
 
-		add_filter( 'WPMUDEV_Field_Checkbox_Group_Arguments_free_orders', array( &$this, 'WPMUDEV_Field_Checkbox_Group_Arguments_free_orders' ), 10, 1 );
-		add_filter( 'WPMUDEV_Field_Checkbox_checked', array( &$this, 'WPMUDEV_Field_Checkbox_Checked_free_orders' ), 10, 2 );
+		add_filter( 'PSOURCE_Field_Checkbox_Group_Arguments_free_orders', array( &$this, 'PSOURCE_Field_Checkbox_Group_Arguments_free_orders' ), 10, 1 );
+		add_filter( 'PSOURCE_Field_Checkbox_checked', array( &$this, 'PSOURCE_Field_Checkbox_Checked_free_orders' ), 10, 2 );
 
 		add_filter( 'mp_order/notification_body/free_orders', array( &$this, 'order_confirmation_email' ), 10, 2 );
 		add_filter( 'mp_order/confirmation_text/' . $this->plugin_name, array( &$this, 'order_confirmation_text' ), 10, 2 );
 	}
 
-	public function WPMUDEV_Field_Checkbox_Group_Arguments_free_orders( $arguments ) {
+	public function PSOURCE_Field_Checkbox_Group_Arguments_free_orders( $arguments ) {
 		$arguments[ 'disabled' ] = 'disabled';
 		return $arguments;
 	}
 
-	public function WPMUDEV_Field_Checkbox_Checked_free_orders( $checked, $name ) {
+	public function PSOURCE_Field_Checkbox_Checked_free_orders( $checked, $name ) {
 		if ( is_admin() && isset( $_GET[ 'page' ] ) && $_GET[ 'page' ] == 'store-settings-payments' && $name == 'gateways[allowed][' . $this->plugin_name . ']' ) {
 			$checked = 'checked';
 		}
@@ -141,7 +141,7 @@ class MP_Gateway_FREE_Orders extends MP_Gateway_API {
 	 */
 	public function init_settings_metabox() {
 
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'			 => $this->generate_metabox_id(),
 			'page_slugs'	 => array( 'store-settings-payments', 'store-settings_page_store-settings-payments' ),
 			'title'			 => sprintf( __( '%s Settings', 'mp' ), $this->admin_name ),

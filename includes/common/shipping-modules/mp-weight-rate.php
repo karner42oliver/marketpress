@@ -23,8 +23,8 @@ class MP_Shipping_Weight_Rate extends MP_Shipping_API {
     //declare here for translation
     $this->public_name = __( 'Weight Rate', 'mp' );
     
-		add_filter( 'wpmudev_field/get_value/shipping[weight_rate][rates]', array( &$this, 'get_rates_value' ), 10, 4 );
-		add_filter( 'wpmudev_field/sanitize_for_db', array( &$this, 'sanitize_rates' ), 10, 3);
+		add_filter( 'psource_field/get_value/shipping[weight_rate][rates]', array( &$this, 'get_rates_value' ), 10, 4 );
+		add_filter( 'psource_field/sanitize_for_db', array( &$this, 'sanitize_rates' ), 10, 3);
 	}
 
   /**
@@ -79,7 +79,7 @@ class MP_Shipping_Weight_Rate extends MP_Shipping_API {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @action wpmudev_field/sanitize_for_db
+	 * @action psource_field/sanitize_for_db
 	 */
 	public function sanitize_rates( $value, $post_id, $field ) {
 		if ( false === strpos( $field->args['name'], 'shipping[weight_rate][rates]' ) ) {
@@ -100,7 +100,7 @@ class MP_Shipping_Weight_Rate extends MP_Shipping_API {
    * @access public
    */
   public function init_settings_metabox() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id' => $this->generate_metabox_id(),
 			'page_slugs' => array(
 				'store-settings-shipping',
@@ -120,7 +120,7 @@ class MP_Shipping_Weight_Rate extends MP_Shipping_API {
 			'name' => $this->get_field_name( 'rates' ),
 			'sortable' => false,
 		) );
-		if ( $layers instanceof WPMUDEV_Field ) {
+		if ( $layers instanceof PSOURCE_Field ) {
 			$layers->add_sub_field( 'text', array(
 				'name' => 'minweight',
 				'label' => array( 'text' => __( 'Cart Weight', 'mp' ) ),

@@ -27,7 +27,7 @@ function on_creation() {
 }
 
     public function init_settings_metabox() {
-        $metabox = new WPMUDEV_Metabox(array(
+        $metabox = new PSOURCE_Metabox(array(
             'id'            => $this->generate_metabox_id(),
             'page_slugs'    => array('store-settings-payments', 'store-settings_page_store-settings-payments'),
             'title'         => sprintf(__('Einstellungen für %s', 'mp'), $this->admin_name),

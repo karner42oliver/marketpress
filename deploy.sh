@@ -15,7 +15,7 @@ GITPATH="$CURRENTDIR/" # this file should be in the base of your git repository
 # svn config
 SVNPATH="/tmp/$PLUGINSLUG" # path to a temp SVN repo. No trailing slash required and don't add trunk.
 SVNURL="http://plugins.svn.wordpress.org/$PLUGINSLUG" # Remote SVN repo on wordpress.org, with no trailing slash
-SVNUSER="WPMUDEV" # your svn username
+SVNUSER="PSOURCE" # your svn username
 
 
 # Let's begin...
@@ -63,7 +63,7 @@ README.md
 .gitmodules
 package.json
 Gruntfile.js
-includes/admin/dash-notice/wpmudev-dash-notification.php" "$SVNPATH/trunk/"
+includes/admin/dash-notice/psource-dash-notification.php" "$SVNPATH/trunk/"
 
 echo "Changing directory to SVN and committing to trunk"
 cd $SVNPATH/trunk/

@@ -49,17 +49,17 @@ class MP_Store_Settings_General {
 	 * @access private
 	 */
 	private function __construct() {
-		add_action( 'wpmudev_field/print_scripts/base_country', array( &$this, 'update_states_dropdown' ) );
-		add_action( 'wpmudev_field/print_scripts/currency', array( &$this, 'update_currency_symbol' ) );
-		add_action( 'wpmudev_metabox/after_settings_metabox_saved', array( &$this, 'update_product_post_type' ) );
+		add_action( 'psource_field/print_scripts/base_country', array( &$this, 'update_states_dropdown' ) );
+		add_action( 'psource_field/print_scripts/currency', array( &$this, 'update_currency_symbol' ) );
+		add_action( 'psource_metabox/after_settings_metabox_saved', array( &$this, 'update_product_post_type' ) );
 		add_action( 'init', array( &$this, 'init_metaboxes' ) );
 
-		add_filter( 'wpmudev_field/format_value/tax[rate]', array( &$this, 'format_tax_rate_value' ), 10, 2 );
-		add_filter( 'wpmudev_field/sanitize_for_db/tax[rate]', array( &$this, 'save_tax_rate_value' ), 10, 3 );
+		add_filter( 'psource_field/format_value/tax[rate]', array( &$this, 'format_tax_rate_value' ), 10, 2 );
+		add_filter( 'psource_field/sanitize_for_db/tax[rate]', array( &$this, 'save_tax_rate_value' ), 10, 3 );
 
 		foreach ( mp()->provinces['CA'] as $key => $value ) {
-			add_filter( 'wpmudev_field/format_value/tax[canada_rate][' . $key . ']', array( &$this, 'format_tax_rate_value' ), 10, 2 );
-			add_filter( 'wpmudev_field/sanitize_for_db/tax[canada_rate][' . $key . ']', array( &$this, 'save_tax_rate_value' ), 10, 3 );
+			add_filter( 'psource_field/format_value/tax[canada_rate][' . $key . ']', array( &$this, 'format_tax_rate_value' ), 10, 2 );
+			add_filter( 'psource_field/sanitize_for_db/tax[canada_rate][' . $key . ']', array( &$this, 'save_tax_rate_value' ), 10, 3 );
 		}
 	}
 
@@ -85,7 +85,7 @@ class MP_Store_Settings_General {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @action wpmudev_metabox/settings_metabox_saved
+	 * @action psource_metabox/settings_metabox_saved
 	 * @uses $wpdb
 	 */
 	public function update_product_post_type( $metabox ) {
@@ -113,7 +113,7 @@ class MP_Store_Settings_General {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @filter wpmudev_field/get_value
+	 * @filter psource_field/get_value
 	 * @return string
 	 */
 	public function format_tax_rate_value( $value, $field ) {
@@ -130,7 +130,7 @@ class MP_Store_Settings_General {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @filter wpmudev_field/sanitize_for_db
+	 * @filter psource_field/sanitize_for_db
 	 * @return string
 	 */
 	public function save_tax_rate_value( $value, $post_id, $field ) {
@@ -147,7 +147,7 @@ class MP_Store_Settings_General {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @action wpmudev_field/print_scripts/currency
+	 * @action psource_field/print_scripts/currency
 	 */
 	public function update_currency_symbol( $field ) {
 		?>
@@ -189,7 +189,7 @@ class MP_Store_Settings_General {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @action wpmudev_field/print_scripts/base_country
+	 * @action psource_field/print_scripts/base_country
 	 */
 	public function update_states_dropdown( $field ) {
 		?>
@@ -229,7 +229,7 @@ class MP_Store_Settings_General {
 	 * @access public
 	 */
 	public function init_advanced_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'			 => 'mp-settings-general-advanced-settings',
 			'page_slugs'	 => array( 'store-settings-general' ),
 			'title'			 => __( 'Advanced Settings', 'mp' ),
@@ -268,7 +268,7 @@ class MP_Store_Settings_General {
 	 * @access public
 	 */
 	public function init_download_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'			 => 'mp-settings-general-downloads',
 			'page_slugs'	 => array( 'store-settings', 'toplevel_page_store-settings' ),
 			'title'			 => __( 'Download Settings', 'mp' ),
@@ -298,7 +298,7 @@ class MP_Store_Settings_General {
 	 * @access public
 	 */
 	public function init_misc_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'			 => 'mp-settings-general-misc',
 			'page_slugs'	 => array( 'store-settings', 'toplevel_page_store-settings' ),
 			'title'			 => __( 'Miscellaneous Settings', 'mp' ),
@@ -397,7 +397,7 @@ class MP_Store_Settings_General {
 	 * @access public
 	 */
 	public function init_currency_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'			 => 'mp-settings-general-currency',
 			'page_slugs'	 => array( 'store-settings', 'toplevel_page_store-settings' ),
 			'title'			 => __( 'Währungseinstellungen', 'mp' ),
@@ -465,7 +465,7 @@ class MP_Store_Settings_General {
 	 * @access public
 	 */
 	public function init_tax_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'			 => 'mp-settings-general-tax',
 			'page_slugs'	 => array( 'store-settings', 'toplevel_page_store-settings' ),
 			'title'			 => __( 'Steuer-Einstellungen', 'mp' ),
@@ -565,7 +565,7 @@ class MP_Store_Settings_General {
 	 * @access public
 	 */
 	public function init_digital_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'			 => 'mp-settings-general-digital',
 			'page_slugs'	 => array( 'store-settings', 'toplevel_page_store-settings' ),
 			'title'			 => __( 'Digital Settings', 'mp' ),
@@ -599,7 +599,7 @@ class MP_Store_Settings_General {
 	 * @access public
 	 */
 	public function init_location_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'			 => 'mp-settings-general-location',
 			'page_slugs'	 => array( 'store-settings', 'toplevel_page_store-settings' ),
 			'title'			 => __( 'Location Settings', 'mp' ),
@@ -672,7 +672,7 @@ class MP_Store_Settings_General {
 	}
 
 	public function init_legal_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'           => 'mp-settings-general-legal',
 			'page_slugs'   => array( 'store-settings', 'toplevel_page_store-settings' ),
 			'title'        => __( 'Legal Information', 'mp' ),

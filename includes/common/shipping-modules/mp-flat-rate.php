@@ -25,7 +25,7 @@ class MP_Shipping_Flat_Rate extends MP_Shipping_API {
     $this->public_name = __( 'Flat Rate', 'mp' );
     
     //format values
-    add_filter( 'wpmudev_field/sanitize_for_db', array( &$this, 'format_input' ), 10, 3 );
+    add_filter( 'psource_field/sanitize_for_db', array( &$this, 'format_input' ), 10, 3 );
 	}
 	
 	/**
@@ -33,7 +33,7 @@ class MP_Shipping_Flat_Rate extends MP_Shipping_API {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @filter wpmudev_field/sanitize_for_db
+	 * @filter psource_field/sanitize_for_db
 	 * @return string
 	 */
 	public function format_input( $value, $post_id, $field ) {
@@ -53,7 +53,7 @@ class MP_Shipping_Flat_Rate extends MP_Shipping_API {
    * @access public
    */
   public function init_settings_metabox() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id' => $this->generate_metabox_id(),
 			'page_slugs' => array(
 				'store-settings-shipping',
@@ -73,7 +73,7 @@ class MP_Shipping_Flat_Rate extends MP_Shipping_API {
 			'name' => 'shipping[flat_rate]',
 		) );
 		
-		if ( ! $complex instanceof WPMUDEV_Field ) {
+		if ( ! $complex instanceof PSOURCE_Field ) {
 			return;
 		}
 			

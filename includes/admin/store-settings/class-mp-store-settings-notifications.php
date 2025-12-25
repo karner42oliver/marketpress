@@ -41,7 +41,7 @@ class MP_Store_Settings_Notifications {
 	 * @access public
 	 */
 	public function init_metaboxes() {
-		$metabox = new WPMUDEV_Metabox(array(
+		$metabox = new PSOURCE_Metabox(array(
 			'id' => 'mp-admin-settings-notifications',
 			'page_slugs' => array('store-settings-notifications', 'store-settings_page_store-settings-notifications'),
 			'title' => __('Admin Notification Settings', 'mp'),
@@ -61,7 +61,7 @@ class MP_Store_Settings_Notifications {
 			'layout' => 'rows',
 		));
 		
-		if ( $new_order instanceof WPMUDEV_Field ) {
+		if ( $new_order instanceof PSOURCE_Field ) {
 			$new_order->add_field('text', array(
 				'name' => 'subject',
 				'label' => array('text' => __('Subject', 'mp')),
@@ -79,7 +79,7 @@ class MP_Store_Settings_Notifications {
 			));
 		}
 		
-		$customer_metabox = new WPMUDEV_Metabox(array(
+		$customer_metabox = new PSOURCE_Metabox(array(
 			'id' => 'mp-customer-settings-notifications',
 			'page_slugs' => array('store-settings-notifications', 'store-settings_page_store-settings-notifications'),
 			'title' => __('Customer Notification Settings', 'mp'),
@@ -125,7 +125,7 @@ class MP_Store_Settings_Notifications {
 			'layout' => 'rows',
 		));
 		
-		if ( $new_order instanceof WPMUDEV_Field ) {
+		if ( $new_order instanceof PSOURCE_Field ) {
 			$new_order->add_field('text', array(
 				'name' => 'subject',
 				'label' => array('text' => __('Subject', 'mp')),
@@ -154,7 +154,7 @@ class MP_Store_Settings_Notifications {
 			'layout' => 'rows',
 		));
 		
-		if ( $new_order_downloads instanceof WPMUDEV_Field ) {
+		if ( $new_order_downloads instanceof PSOURCE_Field ) {
 			$new_order_downloads->add_field('text', array(
 				'name' => 'subject',
 				'label' => array('text' => __('Subject', 'mp')),
@@ -184,7 +184,7 @@ class MP_Store_Settings_Notifications {
 			'after_field' => '</div>', // close the #new_order_tabs_wrapper div
 		));
 		
-		if ( $new_order_mixed instanceof WPMUDEV_Field ) {
+		if ( $new_order_mixed instanceof PSOURCE_Field ) {
 			$new_order_mixed->add_field('text', array(
 				'name' => 'subject',
 				'label' => array('text' => __('Subject', 'mp')),
@@ -241,7 +241,7 @@ class MP_Store_Settings_Notifications {
 			'layout' => 'rows',
 		));
 		
-		if ( $order_shipped instanceof WPMUDEV_Field ) {
+		if ( $order_shipped instanceof PSOURCE_Field ) {
 			$order_shipped->add_field('text', array(
 				'name' => 'subject',
 				'label' => array('text' => __('Subject', 'mp')),
@@ -270,7 +270,7 @@ class MP_Store_Settings_Notifications {
 			'layout' => 'rows',
 		) );
 		
-		if ( $order_shipped_downloads instanceof WPMUDEV_Field ) {
+		if ( $order_shipped_downloads instanceof PSOURCE_Field ) {
 			$order_shipped_downloads->add_field( 'text', array(
 				'name' => 'subject',
 				'label' => array( 'text' => __( 'Subject', 'mp' ) ),
@@ -300,7 +300,7 @@ class MP_Store_Settings_Notifications {
 			'after_field' => '</div>', // close the #order_shipped_tabs_wrapper div
 		) );
 		
-		if ( $order_shipped_mixed instanceof WPMUDEV_Field ) {
+		if ( $order_shipped_mixed instanceof PSOURCE_Field ) {
 			$order_shipped_mixed->add_field( 'text', array(
 				'name' => 'subject',
 				'label' => array( 'text' => __( 'Subject', 'mp' ) ),

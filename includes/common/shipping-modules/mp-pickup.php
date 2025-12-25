@@ -130,7 +130,7 @@ class MP_Shipping_Pickup extends MP_Shipping_API {
 	public function init_settings_metabox() {
 		global $mp;
 		
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'			 => $this->generate_metabox_id(),
 			'page_slugs'	 => array(
 				'store-settings-shipping',

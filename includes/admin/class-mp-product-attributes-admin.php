@@ -70,7 +70,7 @@ class MP_Product_Attributes_Admin {
 	 * @access public
 	 */
 	public static function add_product_attribute_metaboxes() {
-		$metabox	 = new WPMUDEV_Metabox( array(
+		$metabox	 = new PSOURCE_Metabox( array(
 			'id'		 => 'mp-store-settings-product-attributes-add',
 			'title'		 => __( 'Add Product Attribute', 'mp' ),
 			'page_slugs' => array( 'store-settings-productattributes' ),
@@ -129,7 +129,7 @@ class MP_Product_Attributes_Admin {
 			'desc'			 => __( 'Use the numbers on the left to sort. To delete - click the "X" to the right of each row.', 'mp' ),
 		) );
 
-		if ( $repeater instanceof WPMUDEV_Field ) {
+		if ( $repeater instanceof PSOURCE_Field ) {
 			$repeater->add_sub_field( 'text', array(
 				'name'		 => 'name',
 				'label'		 => array( 'text' => __( 'Name', 'mp' ) ),
@@ -243,7 +243,7 @@ class MP_Product_Attributes_Admin {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @filter wpmudev_field_value
+	 * @filter psource_field_value
 	 * @return string
 	 */
 	public static function get_product_attribute_value( $value, $post_id, $raw, $field ) {
@@ -312,7 +312,7 @@ class MP_Product_Attributes_Admin {
 	 * Saves the product attribute
 	 *
 	 * @since 3.0
-	 * @action wpmudev_metabox_before_save_fields
+	 * @action psource_metabox_before_save_fields
 	 * @uses $wpdb
 	 */
 	public static function save_product_attribute( $metabox ) {
@@ -537,7 +537,7 @@ class MP_Product_Attributes_Admin {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @param WPMUDEV_Field $field
+	 * @param PSOURCE_Field $field
 	 */
 	function product_attribute_scripts( $field ) {
 		if ( $field->args[ 'name' ] != 'product_attribute_terms' ) {
@@ -546,13 +546,13 @@ class MP_Product_Attributes_Admin {
 		?>
 		<script type="text/javascript">
 		document.addEventListener('DOMContentLoaded', function() {
-			var subfields = document.querySelectorAll('.wpmudev-subfields');
+			var subfields = document.querySelectorAll('.psource-subfields');
 			// Slug generieren bei Blur
 			subfields.forEach(function(subfieldWrap) {
 				subfieldWrap.addEventListener('blur', function(e) {
 					var input = e.target;
 					if (!input.matches('input[name^="product_attribute_terms"][name*="[name]"]')) return;
-					var subfield = input.closest('.wpmudev-subfield');
+					var subfield = input.closest('.psource-subfield');
 					var nextSubfield = subfield ? subfield.nextElementSibling : null;
 					var slugField = nextSubfield ? nextSubfield.querySelector('input') : null;
 					if (!slugField) return;
@@ -567,7 +567,7 @@ class MP_Product_Attributes_Admin {
 				form.addEventListener('submit', function() {
 					var nameInputs = form.querySelectorAll('input[name^="product_attribute_terms"][name*="[name]"]');
 					nameInputs.forEach(function(input) {
-						var subfield = input.closest('.wpmudev-subfield');
+						var subfield = input.closest('.psource-subfield');
 						var nextSubfield = subfield ? subfield.nextElementSibling : null;
 						var slugField = nextSubfield ? nextSubfield.querySelector('input') : null;
 						if (slugField && slugField.value.trim().length === 0) {
@@ -589,7 +589,7 @@ class MP_Product_Attributes_Admin {
 	 * @access private
 	 */
 	private function __construct() {
-		add_action( 'wpmudev_field/print_scripts', array( &$this, 'product_attribute_scripts' ) );
+		add_action( 'psource_field/print_scripts', array( &$this, 'product_attribute_scripts' ) );
 	}
 
 }

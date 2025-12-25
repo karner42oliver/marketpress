@@ -238,7 +238,7 @@ class MP_Shipping_FedEx extends MP_Shipping_API_Calculated {
 	 * @access public
 	 */
 	public function init_settings_metabox() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => $this->generate_metabox_id(),
 			'page_slugs'  => array(
 				'store-settings-shipping',
@@ -394,7 +394,7 @@ class MP_Shipping_FedEx extends MP_Shipping_API_Calculated {
 			'default_value' => $boxes,
 		) );
 
-		if ( $repeater instanceof WPMUDEV_Field ) {
+		if ( $repeater instanceof PSOURCE_Field ) {
 			$repeater->add_sub_field( 'text', array(
 				'name'       => 'name',
 				'label'      => array( 'text' => __( 'Name', 'mp' ) ),

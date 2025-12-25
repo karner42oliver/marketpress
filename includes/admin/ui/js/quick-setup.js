@@ -70,7 +70,7 @@ jQuery(document).ready(function ($) {
     $("#mp-quick-setup-wizard-measurement-system").remove();
 
 
-    $(document).on('wpmudev_fields_saved_field_base_country', function (e, data) {
+    $(document).on('psource_fields_saved_field_base_country', function (e, data) {
         $.ajax({
             type: 'POST',
             url: ajaxurl,

@@ -48,7 +48,7 @@ class MP_Store_Settings_Addons {
 	<div class="clear"></div>
 	<div class="mp-settings">
 		<form method="post">
-		<?php do_action('wpmudev_metabox/render_settings_metaboxes'); ?>
+		<?php do_action('psource_metabox/render_settings_metaboxes'); ?>
 		</form>
 	</div>
 </div>

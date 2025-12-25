@@ -298,7 +298,7 @@ class MP_Setup_Wizard {
 	 * @access public
 	 */
 	public function init_metaboxes() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'                 => 'mp-quick-setup-wizard',
 			'page_slugs'         => array( 'store-setup-wizard' ),
 			'title'              => __( 'Quick Setup', 'mp' ),
@@ -318,7 +318,7 @@ class MP_Setup_Wizard {
 		if ( isset( $quick_setup_step ) ) {
 
 			/* Store Location */
-			$metabox = new WPMUDEV_Metabox( array(
+			$metabox = new PSOURCE_Metabox( array(
 				'id'                 => 'mp-quick-setup-wizard-location',
 				'page_slugs'         => array( 'store-setup-wizard' ),
 				'title'              => __( 'Location', 'mp' ),
@@ -395,7 +395,7 @@ class MP_Setup_Wizard {
 
 
 			/* Sale to countries */
-			$metabox = new WPMUDEV_Metabox( array(
+			$metabox = new PSOURCE_Metabox( array(
 				'id'          => 'mp-quick-setup-wizard-countries',
 				'page_slugs'  => array( 'store-setup-wizard' ),
 				'title'       => __( 'Countries', 'mp' ),
@@ -425,7 +425,7 @@ class MP_Setup_Wizard {
 
 
 			/* Currency options */
-			$metabox = new WPMUDEV_Metabox( array(
+			$metabox = new PSOURCE_Metabox( array(
 				'id'          => 'mp-quick-setup-wizard-currency',
 				'page_slugs'  => array( 'store-setup-wizard' ),
 				'title'       => __( 'Currency Settings', 'mp' ),
@@ -528,7 +528,7 @@ class MP_Setup_Wizard {
 
 			// Measurement System
 
-			$metabox = new WPMUDEV_Metabox( array(
+			$metabox = new PSOURCE_Metabox( array(
 				'id'          => 'mp-quick-setup-wizard-measurement-system',
 				'page_slugs'  => array( 'store-setup-wizard' ),
 				'title'       => __( 'Measurement System', 'mp' ),
@@ -544,7 +544,7 @@ class MP_Setup_Wizard {
 				'default_value' => 'english',
 			) );
 
-			$metabox = new WPMUDEV_Metabox( array(
+			$metabox = new PSOURCE_Metabox( array(
 				'id'                 => 'mp-quick-setup-is-wizard-shipping',
 				'page_slugs'         => array( 'store-setup-wizard' ),
 				'title'              => '',
@@ -564,7 +564,7 @@ class MP_Setup_Wizard {
 				),
 				'default_value' => '0',
 			) );
-			$metabox = new WPMUDEV_Metabox( array(
+			$metabox = new PSOURCE_Metabox( array(
 				'id'                 => 'mp-quick-setup-wizard-shipping',
 				'page_slugs'         => array( 'store-setup-wizard' ),
 				'title'              => __( 'Measurement System', 'mp' ),
@@ -620,7 +620,7 @@ class MP_Setup_Wizard {
 			) );
 
 			//payment gateway
-			$metabox = new WPMUDEV_Metabox( array(
+			$metabox = new PSOURCE_Metabox( array(
 				'id'                 => 'mp-quick-setup-wizard-payment',
 				'page_slugs'         => array( 'store-setup-wizard' ),
 				'title'              => __( 'Payment Gateways', 'mp' ),
@@ -667,20 +667,20 @@ class MP_Setup_Wizard {
 		add_action( 'init', array( &$this, 'init_metaboxes' ) );
 		add_action( 'wp_ajax_mp_preset_currency_base_country', array( &$this, 'determine_currency' ) );
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'store-setup-wizard' ) {
-			add_filter( 'wpmudev_metabox/init_args', array( &$this, 'update_settings_for_shipping_rule' ) );
+			add_filter( 'psource_metabox/init_args', array( &$this, 'update_settings_for_shipping_rule' ) );
 			/**
 			 * Payment widzard having 2 radios default gateway & other, we don't store this value inside db,
 			 * use this hook for return the right
 			 */
-			add_filter( 'wpmudev_field/get_value/mp_charge_shipping', array(
+			add_filter( 'psource_field/get_value/mp_charge_shipping', array(
 				&$this,
 				'determine_is_charge_shipping'
 			), 10, 4 );
-			add_filter( 'wpmudev_field/get_value/wizard_payment', array(
+			add_filter( 'psource_field/get_value/wizard_payment', array(
 				&$this,
 				'determine_is_use_paymentgateway'
 			), 10, 4 );
-			add_filter( 'wpmudev_metabox/after_settings_metabox_saved', array( &$this, 'maybe_save_manual_payment' ) );
+			add_filter( 'psource_metabox/after_settings_metabox_saved', array( &$this, 'maybe_save_manual_payment' ) );
 		}
 	}
 

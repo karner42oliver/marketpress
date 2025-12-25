@@ -33,21 +33,21 @@ class MP_Store_Settings_Presentation {
 	 * @access private
 	 */
 	private function __construct() {
-		add_filter( 'wpmudev_field/after_field', array( &$this, 'display_create_page_button' ), 10, 2 );
-		add_action( 'wpmudev_field/print_scripts', array( &$this, 'create_store_page_js' ) );
+		add_filter( 'psource_field/after_field', array( &$this, 'display_create_page_button' ), 10, 2 );
+		add_action( 'psource_field/print_scripts', array( &$this, 'create_store_page_js' ) );
 
 		if ( mp_get_get_value( 'page' ) == 'store-settings-presentation' ) {
 			add_action( 'init', array( &$this, 'init_metaboxes' ) );
-			add_action( 'wpmudev_metabox/after_settings_metabox_saved', array( &$this, 'link_store_pages' ) );
+			add_action( 'psource_metabox/after_settings_metabox_saved', array( &$this, 'link_store_pages' ) );
 		}
 	}
 
 	/**
 	 *
-	 * @param $wpmudev_metabox
+	 * @param $psource_metabox
 	 */
-	public function link_store_pages( $wpmudev_metabox ) {
-		if ( $wpmudev_metabox->args['id'] == 'mp-settings-presentation-pages-slugs' ) {
+	public function link_store_pages( $psource_metabox ) {
+		if ( $psource_metabox->args['id'] == 'mp-settings-presentation-pages-slugs' ) {
 			$pages = mp_get_post_value( 'pages' );
 			foreach ( $pages as $type => $page ) {
 				MP_Pages_Admin::get_instance()->save_store_page_value( $type, $page, false );
@@ -60,7 +60,7 @@ class MP_Store_Settings_Presentation {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @action wpmudev_field/print_scripts
+	 * @action psource_field/print_scripts
 	 */
 	public function create_store_page_js( $field ) {
 		if ( $field->args['original_name'] !== 'pages[store]' ) {
@@ -131,7 +131,7 @@ class MP_Store_Settings_Presentation {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * filter wpmudev_field/after_field
+	 * filter psource_field/after_field
 	 */
 	public function display_create_page_button( $html, $field ) {
 		switch ( $field->args['original_name'] ) {
@@ -177,7 +177,7 @@ class MP_Store_Settings_Presentation {
 	 * @access public
 	 */
 	public function init_store_pages_slugs_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => 'mp-settings-presentation-pages-slugs',
 			'page_slugs'  => array( 'store-settings-presentation', 'store-settings_page_store-settings-presentation' ),
 			'title'       => __( 'Store Pages', 'mp' ),
@@ -238,7 +238,7 @@ class MP_Store_Settings_Presentation {
 	 * @access public
 	 */
 	public function init_social_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => 'mp-settings-presentation-social',
 			'page_slugs'  => array( 'store-settings-presentation', 'store-settings_page_store-settings-presentation' ),
 			'title'       => __( 'Social Settings', 'mp' ),
@@ -325,7 +325,7 @@ class MP_Store_Settings_Presentation {
 	 * @access public
 	 */
 	public function init_product_list_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => 'mp-settings-presentation-product-list',
 			'page_slugs'  => array( 'store-settings-presentation', 'store-settings_page_store-settings-presentation' ),
 			'title'       => __( 'Product List/Grid Settings', 'mp' ),
@@ -422,7 +422,7 @@ class MP_Store_Settings_Presentation {
 			),
 		) );
 
-		if ( $custom_size instanceof WPMUDEV_Field ) {
+		if ( $custom_size instanceof PSOURCE_Field ) {
 			$custom_size->add_field( 'text', array(
 				'name'       => 'width',
 				'label'      => array( 'text' => __( 'Width', 'mp' ) ),
@@ -534,7 +534,7 @@ class MP_Store_Settings_Presentation {
 	}
 
 	public function init_miscellaneous_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => 'mp-settings-miscellaneous-product-list',
 			'page_slugs'  => array( 'store-settings-presentation', 'store-settings_page_store-settings-presentation' ),
 			'title'       => __( 'Miscellaneous Settings', 'mp' ),
@@ -560,7 +560,7 @@ class MP_Store_Settings_Presentation {
 	 * @access public
 	 */
 	public function init_related_product_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => 'mp-settings-presentation-product-related',
 			'page_slugs'  => array( 'store-settings-presentation', 'store-settings_page_store-settings-presentation' ),
 			'title'       => __( 'Related Product Settings', 'mp' ),
@@ -640,7 +640,7 @@ class MP_Store_Settings_Presentation {
 	 * @access public
 	 */
 	public function init_product_page_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => 'mp-settings-presentation-product-page',
 			'page_slugs'  => array( 'store-settings-presentation', 'store-settings_page_store-settings-presentation' ),
 			'title'       => __( 'Product Page Settings', 'mp' ),
@@ -718,7 +718,7 @@ class MP_Store_Settings_Presentation {
 			),
 		) );
 
-		if ( $custom_size instanceof WPMUDEV_Field ) {
+		if ( $custom_size instanceof PSOURCE_Field ) {
 			$custom_size->add_field( 'text', array(
 				'name'       => 'width',
 				'label'      => array( 'text' => __( 'Width', 'mp' ) ),
@@ -792,7 +792,7 @@ class MP_Store_Settings_Presentation {
 	 * @access public
 	 */
 	public function init_general_settings() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => 'mp-settings-presentation-general',
 			'page_slugs'  => array( 'store-settings-presentation', 'store-settings_page_store-settings-presentation' ),
 			'title'       => __( 'General Settings', 'mp' ),

@@ -45,7 +45,7 @@ class MP_Store_Settings_Payments {
 	 * @access public
 	 */
 	public function add_metaboxes() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => 'mp-settings-payments',
 			'page_slugs'  => array( 'store-settings-payments', 'store-settings_page_store-settings-payments' ),
 			'title'       => __( 'Payment Gateways', 'mp' ),
@@ -90,7 +90,7 @@ class MP_Store_Settings_Payments {
 				$onboard_html .= '<p style="color:red;">' . esc_html( $error_msg ) . '</p>';
 				delete_option( 'mp_paypal_marketplace_onboard_error_' . get_current_blog_id() );
 			}
-			$onboard_metabox = new WPMUDEV_Metabox( array(
+			$onboard_metabox = new PSOURCE_Metabox( array(
 				'id'          => 'mp-settings-paypal-marketplace-onboarding',
 				'page_slugs'  => array( 'store-settings-payments', 'store-settings_page_store-settings-payments' ),
 				'title'       => __( 'PayPal Marketplace Onboarding', 'mp' ),

@@ -607,7 +607,7 @@ class MP_Gateway_eWay31 extends MP_Gateway_API {
    * @access public
    */
   public function init_settings_metabox() {
-        $metabox = new WPMUDEV_Metabox(array(
+        $metabox = new PSOURCE_Metabox(array(
             'id' => $this->generate_metabox_id(),
             'page_slugs' => array('store-settings-payments', 'store-settings_page_store-settings-payments'),
             'title' => sprintf(__('%s Settings', 'mp'), $this->admin_name),
@@ -646,7 +646,7 @@ class MP_Gateway_eWay31 extends MP_Gateway_API {
                 'action' => 'show',
             ),
         ));
-        if ( $api_creds_live instanceof WPMUDEV_Field ) {
+        if ( $api_creds_live instanceof PSOURCE_Field ) {
             $api_creds_live->add_field('text', array(
                 'name' => 'api_key',
                 'label' => array('text' => __('API Key', 'mp')),
@@ -668,7 +668,7 @@ class MP_Gateway_eWay31 extends MP_Gateway_API {
                 'action' => 'show',
             ),
         ));
-        if ( $api_creds_sandbox instanceof WPMUDEV_Field ) {
+        if ( $api_creds_sandbox instanceof PSOURCE_Field ) {
             $api_creds_sandbox->add_field('text', array(
                 'name' => 'api_key',
                 'label' => array('text' => __('API Key', 'mp')),

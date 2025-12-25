@@ -10,7 +10,7 @@ mp_register_gateway_plugin( 'MP_Gateway_PayPal_Marketplace', 'paypal_marketplace
 // Netzwerk-Metabox für PayPal Marketplace Gateway-Settings
 add_action( 'mp_multisite_init_metaboxes', 'init_paypal_marketplace_network_settings_metaboxes' );
 function init_paypal_marketplace_network_settings_metaboxes() {
-    $metabox = new WPMUDEV_Metabox( array(
+    $metabox = new PSOURCE_Metabox( array(
         'id'               => 'mp-network-settings-paypal-marketplace',
         'page_slugs'       => array( 'network-store-settings' ),
         'title'            => __( 'PayPal Marketplace (Commerce Platform)', 'mp' ),
@@ -67,7 +67,7 @@ function init_paypal_marketplace_shop_settings_metaboxes() {
         mp_get_network_setting('global_cart') &&
         mp_get_network_setting('global_gateway') === 'paypal_marketplace'
     ) {
-        $metabox = new WPMUDEV_Metabox( array(
+        $metabox = new PSOURCE_Metabox( array(
             'id'               => 'mp-settings-gateway-paypal-marketplace',
             'page_slugs'       => array( 'store-settings-payments' ),
             'title'            => __( 'PayPal Marketplace (Commerce Platform)', 'mp' ),

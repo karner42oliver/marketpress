@@ -106,7 +106,7 @@ Es ist groß und leistungsstark, aber keine Sorge... Der MarketPress-Setup-Assis
 
 Falls Sie beim Einstieg auf Probleme stoßen, ist <a href="https://cp-psource.github.io/marketpress/#usage">MarketPress</a> gut dokumentiert, und unser Support-Team steht Ihnen rund um die Uhr zur Verfügung, um alle Ihre Fragen zu beantworten.
 
-Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium.wpmudev.org/project/e-commerce/">MarketPress eCommerce</a>. Alles, was Sie brauchen, um Ihren Online-Shop zu starten und auszubauen.
+Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium.psource.org/project/e-commerce/">MarketPress eCommerce</a>. Alles, was Sie brauchen, um Ihren Online-Shop zu starten und auszubauen.
 
 == Changelog ==
 
@@ -526,7 +526,7 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 * Add Euro support to Stripe gateway (Ireland)
 * Add "Tax Label" setting to customize the tax line item label in the cart
 * Removed all the old style PHP 4 constructors (Class name functions)
-* Remove help screen when WPMUDEV_REMOVE_BRANDING defined
+* Remove help screen when PSOURCE_REMOVE_BRANDING defined
 * Fixed order_confirmation_email() declaration to match it's parent.(Warnings)
 * In USPS shipping added maximum box weights to flat rate boxes to improve calculating the number of boxes needed.
 * Fixed problem where shipping option could be unselected if the suboption disappeared due to changing the address.
@@ -566,7 +566,7 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 * Fix bug with product list widget when ordering by price or sales
 * Fix missing closing tag in global widget breaking drag and drop
 * Fix shipping settings save filter for method plugins: http://wp.mu/d7
-* Error check in Manual Payments gateway: http://premium.wpmudev.org/forums/topic/bug-with-manual-payment
+* Error check in Manual Payments gateway: http://premium.psource.org/forums/topic/bug-with-manual-payment
 * Fixed 10525 Paypal errors in global cart checkouts
 * Change the "from" price shown on variation listings to the lowest
 * Change PayPal generated timestamps for server timezone support
@@ -592,14 +592,14 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 * Display shipping inclusive of tax if tax inclusive pricing is on
 * Urlencode paypal url fields to support utf8 store slugs
 * Fix an error and debug code in PayPal Express gateway
-* Fix custom message showing in cart widget when empty: http://premium.wpmudev.org/forums/topic/shopping-cart-page-message-repeating-in-shopping-cart-widget
+* Fix custom message showing in cart widget when empty: http://premium.psource.org/forums/topic/shopping-cart-page-message-repeating-in-shopping-cart-widget
 * Fix hooks for Affiliate plugin integration with Manual Payments gateway. Props @Rystraum!
 * iDeal gateway bugfixes
 * Fix rounding problems with tax prices when tax inclusive pricing is on
 * Fix bug in flat rate shipping calculations
 * Fix issue with shipping being charged for downloadable orders in global cart
 * Important bugfix with saving Extra Shipping costs and Weights
-* Fix bugs in iDeal gateway: http://premium.wpmudev.org/forums/topic/ideal-making-it-work
+* Fix bugs in iDeal gateway: http://premium.psource.org/forums/topic/ideal-making-it-work
 * Add Schema.org microdata to products for SEO, props @aristath!
 * Add "from" price label to listings of multiple variation products
 * Add cart message even when its empty
@@ -627,7 +627,7 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 * Fix missing labels for custom styles in Network settings
 * Added support for per Product and variation custom fields for personalization
 * Allow shortcodes to work in custom page messages
-* Fix issue with Stripe payment gateway JS conflict. http://premium.wpmudev.org/forums/topic/marketpress-problem-cant-finish-checking-out
+* Fix issue with Stripe payment gateway JS conflict. http://premium.psource.org/forums/topic/marketpress-problem-cant-finish-checking-out
 * Fix an issue with numbered tags showing all products
 * Bug fixes with $content argument in mp_product template function/shortcode
 * Wrap prev/next nav links in wrapper for styling
@@ -638,10 +638,10 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 * Add cart details to PayPal Express gateway paypal history
 * Fix a bug in chained payments gateway not filling shipping/tax totals
 * Internationalize various date strings on the order status pages
-* Add UTF-8 BOM to csv exports http://premium.wpmudev.org/forums/topic/export-orders-csv-character-support
+* Add UTF-8 BOM to csv exports http://premium.psource.org/forums/topic/export-orders-csv-character-support
 * Fix issues with PayPal chained payments gateway for sure
-* Fix bug in Payflow Pro gateway: http://premium.wpmudev.org/forums/topic/marketpress-payflow-pro-not-sending-info-to-paypal
-* Separate AJAX cart and checkout JS: http://premium.wpmudev.org/forums/topic/checkout-button-disappears
+* Fix bug in Payflow Pro gateway: http://premium.psource.org/forums/topic/marketpress-payflow-pro-not-sending-info-to-paypal
+* Separate AJAX cart and checkout JS: http://premium.psource.org/forums/topic/checkout-button-disappears
 * Create MP_HIDE_MENUS define to hide store menus
 * Add basic error messages for downloads
 * Fix ocassional issues with chained payments gateway
@@ -675,7 +675,7 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 * Add "Only show on store pages" option to all widgets
 * Add setting to disable excerpts in product lists
 * Add per product special tax rates
-* Add Pro Sites level recognition for multisite: http://premium.wpmudev.org/forums/topic/feature-request-advanced-integration-of-marketpress-and-pro-sites
+* Add Pro Sites level recognition for multisite: http://premium.psource.org/forums/topic/feature-request-advanced-integration-of-marketpress-and-pro-sites
 * Add Stripe payment gateway! Accept credit cards directly on your site with full PCI compliance
 * Add custom API url support to Authorize.net gateway for compatibility with many 3rd party gateways
 * Add beta PayPal Payflow Pro gateway
@@ -697,19 +697,19 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 
 = 2.4.1 =
 * WP 3.3 Compatibility - Not backwards compatible
-* Fix negative quantities being able to be added to your cart: http://premium.wpmudev.org/forums/topic/marketpress-security-bug
+* Fix negative quantities being able to be added to your cart: http://premium.psource.org/forums/topic/marketpress-security-bug
 * Fix removing cart items when global is set to on
 * Gracefully handle global carts if a seller hasn't configured PayPal by skipping their checkout
 * Handle SSL properly on checkout page
-* Fix out of stock AJAX message for variation products: http://premium.wpmudev.org/forums/topic/out-of-stock-triggers-when-only-one-of-the-variations-is-sold-out-but-others-are-still-available
-* Hook into logout to clear personal session information: http://premium.wpmudev.org/forums/topic/security-issue-with-marketpress
+* Fix out of stock AJAX message for variation products: http://premium.psource.org/forums/topic/out-of-stock-triggers-when-only-one-of-the-variations-is-sold-out-but-others-are-still-available
+* Hook into logout to clear personal session information: http://premium.psource.org/forums/topic/security-issue-with-marketpress
 * Add textdomain to plugin header to translate plugin description
 * Change link field to work with low resolution
 * Fix bug with icons css theme
 * Update the table rate shipping for international support
 * Update chained payments documentation
 * Add Turkish lira to PayPal gateways
-* Make shipping info available to search for on orders page. http://premium.wpmudev.org/forums/topic/search-store-orders-by-name-bug
+* Make shipping info available to search for on orders page. http://premium.psource.org/forums/topic/search-store-orders-by-name-bug
 * Add JS to drop-down categories shortcode
 * Fix missing title on product list pages
 * Fix title incompatibility with Genesis & Catalyst framework based themes
@@ -779,7 +779,7 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 * WP e-Commerce product importer added
 * New importer plugin class added for others to easily build importers
 * Fix language file location
-* Fix slug conflicts with virtual pages and similar permalinks: http://premium.wpmudev.org/forums/topic/checkout-page-redirecting-slug-bug
+* Fix slug conflicts with virtual pages and similar permalinks: http://premium.psource.org/forums/topic/checkout-page-redirecting-slug-bug
 * Add Kuwaiti dinar
 * Additional error checks for FrameMarket theme
 * Add check for MP_HIDE_ORDERSTATUS_SHIPPING constant
@@ -865,7 +865,7 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 
 = 1.1.6 =
 * Added 'mp_default_settings' filter to mod default settings array on new stores
-* Fixed http://premium.wpmudev.org/forums/topic/marketpress-template-page-mp_global_productsphp-works-but-browsers-title-says-page-not-found?replies=20#post-72045
+* Fixed http://premium.psource.org/forums/topic/marketpress-template-page-mp_global_productsphp-works-but-browsers-title-says-page-not-found?replies=20#post-72045
 * Fixed major 3.1 Compatibility bug I missed on orders page
 * Fixed order status change success message on orders page
 
@@ -898,7 +898,7 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 
 = 1.1 =
 * 2Checkout and Authorize.net beta gateways added
-* new mp_is_shop_page() template function http://premium.wpmudev.org/forums/topic/marketpressload_store_templates-should-make-is_shop_page-available
+* new mp_is_shop_page() template function http://premium.psource.org/forums/topic/marketpressload_store_templates-should-make-is_shop_page-available
 * fixed bug not allowing limited gateways for supporters
 * lots of little bug fixes/improvements
 

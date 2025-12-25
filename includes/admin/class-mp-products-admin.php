@@ -39,7 +39,7 @@ class MP_Products_Screen {
 		// Remove add-new submenu item from store admin menu.
 		add_action( 'admin_menu', array( &$this, 'remove_menu_items' ), 999 );
 		// Hide featured image for variable products.
-		add_action( 'wpmudev_field/print_scripts/has_variations', array( &$this, 'maybe_hide_core_metaboxes' ) );
+		add_action( 'psource_field/print_scripts/has_variations', array( &$this, 'maybe_hide_core_metaboxes' ) );
 		// Product variations save/get value.
 		add_action( 'init', array( &$this, 'save_init_product_variations' ) );
 		add_action( 'wp_ajax_save_inline_post_data', array( &$this, 'save_inline_variation_post_data' ) );
@@ -70,14 +70,14 @@ class MP_Products_Screen {
 		$mp_product_atts = MP_Product_Attributes::get_instance();
 		$atts            = $mp_product_atts->get();
 		foreach ( $atts as $att ) {
-			add_filter( 'wpmudev_field/save_value/' . $mp_product_atts->generate_slug( $att->attribute_id ), array(
+			add_filter( 'psource_field/save_value/' . $mp_product_atts->generate_slug( $att->attribute_id ), array(
 				&$this,
 				'save_product_attribute',
 			), 10, 3 );
 		}
 		add_filter( 'enter_title_here', array( &$this, 'custom_placeholder_title' ), 10, 2 );
 		add_action( 'admin_menu', array( &$this, 'remove_metaboxes' ) );
-		   // Füge die eigene Produktbilder-Metabox (WPMUDEV_Metabox) hinzu
+		   // Füge die eigene Produktbilder-Metabox (PSOURCE_Metabox) hinzu
 		   add_action( 'add_meta_boxes', array( $this, 'init_product_images_metabox' ) );
 	}
 
@@ -88,7 +88,7 @@ class MP_Products_Screen {
 	 * @access public
 	 */
 	public function init_product_images_metabox() {
-		$metabox = new WPMUDEV_Metabox( apply_filters( 'mp_metabox_array_mp-product-images-metabox', array(
+		$metabox = new PSOURCE_Metabox( apply_filters( 'mp_metabox_array_mp-product-images-metabox', array(
 			'id'          => 'mp-product-images-metabox',
 			'title'       => sprintf( __( '%1$sProduktbilder%2$s %3$sFüge Produktbilder hinzu. Das erste Bild ist das Hauptbild (Reihenfolge per Drag & Drop änderbar)%2$s', 'mp' ), '<span class="mp_meta_section_title">', '</span>', '<span class="mp_meta_bellow_desc">' ),
 			'post_type'   => MP_Product::get_post_type(),
@@ -198,14 +198,14 @@ class MP_Products_Screen {
 		<script type="text/javascript">
 		document.addEventListener('DOMContentLoaded', function() {
 			var inputs = document.querySelectorAll('input[name="tax_input[product_category][]"]');
-			var subfields = document.querySelectorAll('.wpmudev-subfield');
+			var subfields = document.querySelectorAll('.psource-subfield');
 
 			function toggleProductAttributes() {
 				var checkedInputs = Array.from(inputs).filter(function(input) { return input.checked; });
 				if (checkedInputs.length === 0) {
 					subfields.forEach(function(subfield) {
 						if (subfield.querySelector('[name*="product_attr_"]')) {
-							subfield.classList.remove('wpmudev-field-hidden');
+							subfield.classList.remove('psource-field-hidden');
 						}
 					});
 					return;
@@ -213,7 +213,7 @@ class MP_Products_Screen {
 				// hide all product attributes
 				subfields.forEach(function(subfield) {
 					if (subfield.querySelector('[name*="product_attr_"]')) {
-						subfield.classList.add('wpmudev-field-hidden');
+						subfield.classList.add('psource-field-hidden');
 					}
 				});
 				// show associated attributes
@@ -221,7 +221,7 @@ class MP_Products_Screen {
 					var val = input.value;
 					subfields.forEach(function(subfield) {
 						if (subfield.querySelector('[data-product-category-' + val + ']')) {
-							subfield.classList.remove('wpmudev-field-hidden');
+							subfield.classList.remove('psource-field-hidden');
 						}
 					});
 				});
@@ -240,7 +240,7 @@ class MP_Products_Screen {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @action wpmudev_field/print_scripts/has_variations
+	 * @action psource_field/print_scripts/has_variations
 	 */
 	public function maybe_hide_core_metaboxes() {
 		?>
@@ -723,7 +723,7 @@ class MP_Products_Screen {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @filter wpmudev_field/save_value/product_attr_*
+	 * @filter psource_field/save_value/product_attr_*
 	 */
 	public function save_product_attribute( $value, $post_id, $field ) {
 		$slug = $field->args['name'];
@@ -737,7 +737,7 @@ class MP_Products_Screen {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @filter wpmudev_field/get_value/variations
+	 * @filter psource_field/get_value/variations
 	 */
 	public function get_product_variations( $value, $post_id, $raw, $field ) {
 		$product    = new MP_Product( $post_id );
@@ -1381,7 +1381,7 @@ class MP_Products_Screen {
 	 *
 	 * @since 3.0
 	 * @access public
-	 * @filter wpmudev_field/save_value/variations
+	 * @filter psource_field/save_value/variations
 	 * @uses $wpdb
 	 */
 	public function save_product_variations_old( $value, $post_id, $field ) {
@@ -1467,7 +1467,7 @@ WHERE $delete_where"
 	 * @access public
 	 */
 	public function init_related_products_metabox() {
-		$metabox = new WPMUDEV_Metabox( apply_filters( 'mp_metabox_array_mp-related-products-metabox', array(
+		$metabox = new PSOURCE_Metabox( apply_filters( 'mp_metabox_array_mp-related-products-metabox', array(
 			'id'        => 'mp-related-products-metabox',
 			'title'     => __( 'Related Products', 'mp' ),
 			'post_type' => MP_Product::get_post_type(),
@@ -1494,7 +1494,7 @@ WHERE $delete_where"
 	 * @access public
 	 */
 	public function init_featured_product_metabox() {
-		$metabox = new WPMUDEV_Metabox( apply_filters( 'mp_metabox_array_mp-featured_product-metabox', array(
+		$metabox = new PSOURCE_Metabox( apply_filters( 'mp_metabox_array_mp-featured_product-metabox', array(
 			'id'        => 'mp-featured-product-metabox',
 			'title'     => __( 'Featured Product', 'mp' ),
 			'post_type' => MP_Product::get_post_type(),
@@ -1514,7 +1514,7 @@ WHERE $delete_where"
 	 * @access public
 	 */
 	public function init_product_type_metabox() {
-		$metabox = new WPMUDEV_Metabox( apply_filters( 'mp_metabox_array_mp-product-type-metabox', array(
+		$metabox = new PSOURCE_Metabox( apply_filters( 'mp_metabox_array_mp-product-type-metabox', array(
 			'id'        => 'mp-product-type-metabox',
 			'title'     => sprintf( __( 'Product Kind %1$s(Physical Product, Digital, etc)%2$s', 'mp' ), '<span class="mp_meta_small_desc">', '</span>' ),
 			'post_type' => MP_Product::get_post_type(),
@@ -1553,7 +1553,7 @@ WHERE $delete_where"
 
 		$has_variations = get_post_meta( $post_id, 'has_variations', false );
 
-		$metabox = new WPMUDEV_Metabox( apply_filters( 'mp_metabox_array_mp-product-price-inventory-variants-metabox', array(
+		$metabox = new PSOURCE_Metabox( apply_filters( 'mp_metabox_array_mp-product-price-inventory-variants-metabox', array(
 			'id'        => 'mp-product-price-inventory-variants-metabox',
 			'title'     => $has_variations ? __( 'Product Variations', 'mp' ) : sprintf( __( '%1$sPrice, Inventory & Variants%2$s %3$sSet price, manage inventory and create Product Variants (if appropriate for your product).%2$s', 'mp' ), '<span class="mp_meta_section_title">', '</span>', '<span class="mp_meta_bellow_desc">' ),
 			'post_type' => MP_Product::get_post_type(),
@@ -1617,7 +1617,7 @@ WHERE $delete_where"
 				'class'       => 'mp-product-sale-price-holder mp-special-box'
 			) ) );
 
-			if ( $sale_price instanceof WPMUDEV_Field ) {
+			if ( $sale_price instanceof PSOURCE_Field ) {
 				$sale_price->add_field( 'text', apply_filters( 'mp_add_field_array_amount', array(
 					'name'        => 'amount',
 					'placeholder' => __( 'Enter Sale Price', 'mp' ),
@@ -1724,7 +1724,7 @@ WHERE $delete_where"
 				'class'       => ( 'metric' == mp_get_setting( 'shipping->system' ) ) ? 'mp-product-shipping-holder mp-special-box mp-system-metric' : 'mp-product-shipping-holder mp-special-box'
 			) ) );
 
-			if ( $weight instanceof WPMUDEV_Field ) {
+			if ( $weight instanceof PSOURCE_Field ) {
 				if ( 'metric' == mp_get_setting( 'shipping->system' ) ) {
 					$weight->add_field( 'text', apply_filters( 'mp_add_field_array_kilograms', array(
 						'name'       => 'pounds',
@@ -1786,7 +1786,7 @@ WHERE $delete_where"
 				'class'       => 'mp-product-inventory-holder mp-special-box',
 			) ) );
 
-			if ( $inventory instanceof WPMUDEV_Field ) {
+			if ( $inventory instanceof PSOURCE_Field ) {
 				$inventory->add_field( 'text', apply_filters( 'mp_add_field_array_inventory', array(
 					'name'        => 'inventory',
 					'label'       => array( 'text' => __( 'Quantity', 'mp' ) ),
@@ -1920,7 +1920,7 @@ WHERE $delete_where"
 	 * @access public
 	 */
 	public function init_product_details_metabox() {
-		$metabox = new WPMUDEV_Metabox( apply_filters( 'mp_metabox_array_mp-product-details-metabox', array(
+		$metabox = new PSOURCE_Metabox( apply_filters( 'mp_metabox_array_mp-product-details-metabox', array(
 			'id'          => 'mp-product-details-metabox',
 			'title'       => __( 'Product Details', 'mp' ),
 			'post_type'   => MP_Product::get_post_type(),
@@ -2059,7 +2059,7 @@ WHERE $delete_where"
 			'label' => array( 'text' => __( 'Sale Price', 'mp' ) ),
 		) ) );
 
-		if ( $sale_price instanceof WPMUDEV_Field ) {
+		if ( $sale_price instanceof PSOURCE_Field ) {
 			$sale_price->add_field( 'text', apply_filters( 'mp_add_field_array_amount', array(
 				'name'       => 'amount',
 				'label'      => array( 'text' => __( 'Price', 'mp' ) ),
@@ -2123,7 +2123,7 @@ WHERE $delete_where"
 			),
 		) ) );
 
-		if ( $weight instanceof WPMUDEV_Field ) {
+		if ( $weight instanceof PSOURCE_Field ) {
 			$weight->add_field( 'text', apply_filters( 'mp_add_field_array_pounds', array(
 				'name'       => 'pounds',
 				'label'      => array( 'text' => __( 'Pounds', 'mp' ) ),
@@ -2166,7 +2166,7 @@ WHERE $delete_where"
 	 * @access public
 	 */
 	public function init_variations_metabox() {
-		$metabox = new WPMUDEV_Metabox( apply_filters( 'mp_metabox_array_mp-product-variations-metabox', array(
+		$metabox = new PSOURCE_Metabox( apply_filters( 'mp_metabox_array_mp-product-variations-metabox', array(
 			'id'          => 'mp-product-variations-metabox',
 			'title'       => __( 'Variations', 'mp' ),
 			'post_type'   => MP_Product::get_post_type(),
@@ -2185,7 +2185,7 @@ WHERE $delete_where"
 			'add_row_label' => __( 'Add Variation', 'mp' ),
 		) ) );
 
-		if ( $repeater instanceof WPMUDEV_Field ) {
+		if ( $repeater instanceof PSOURCE_Field ) {
 			$repeater->add_sub_field( 'tab_labels', apply_filters( 'mp_add_sub_field_array_tabs', array(
 				'name' => 'tabs',
 				'tabs' => array(

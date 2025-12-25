@@ -157,7 +157,7 @@ class MP_Shipping_USPS extends MP_Shipping_API_Calculated {
 	 * @access public
 	 */
 	public function init_settings_metabox() {
-		$metabox = new WPMUDEV_Metabox( array(
+		$metabox = new PSOURCE_Metabox( array(
 			'id'          => $this->generate_metabox_id(),
 			'page_slugs'  => array(
 				'store-settings-shipping',
@@ -237,7 +237,7 @@ class MP_Shipping_USPS extends MP_Shipping_API_Calculated {
 			'add_row_label' => __( 'Add Box', 'mp' ),
 		) );
 
-		if ( $boxes instanceof WPMUDEV_Field ) {
+		if ( $boxes instanceof PSOURCE_Field ) {
 			$boxes->add_sub_field( 'text', array(
 				'name'  => 'name',
 				'label' => array( 'text' => __( 'Name', 'mp' ) ),
