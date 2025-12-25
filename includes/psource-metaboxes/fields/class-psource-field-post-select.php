@@ -28,6 +28,10 @@ class PSOURCE_Field_Post_Select extends PSOURCE_Field {
 		$this->args[ 'custom' ][ 'data-placeholder' ]	 = $this->args[ 'placeholder' ];
 		$this->args[ 'custom' ][ 'data-multiple' ]		 = (int) $this->args[ 'multiple' ];
 		$this->args[ 'custom' ][ 'data-query' ]			 = http_build_query( $this->args[ 'query' ] );
+		// Entferne alte select2/mp_select2 Klassen
+		if ( isset($this->args['class']) ) {
+			$this->args['class'] = preg_replace('/\b(mp_select2|mp-select2|select2)\b/', '', $this->args['class']);
+		}
 	}
 
 	/**
@@ -167,9 +171,30 @@ class PSOURCE_Field_Post_Select extends PSOURCE_Field {
 			$data[] = $id . '->' . get_the_title( $id );
 		}
 
-		$this->args[ 'custom' ][ 'data-select2-value' ] = implode( '||', $data );
 		$this->before_field();
-		echo '<input type="hidden" ' . $this->parse_atts() . ' value="' . implode( ',', $ids ) . '" />';
+		if ( $this->args['multiple'] ) {
+			echo '<input type="hidden" ' . $this->parse_atts() . ' value="' . implode( ',', $ids ) . '" />';
+		} else {
+			// Seiten abfragen
+			$query_args = array();
+			if ( isset($this->args['custom']['data-query']) ) {
+				parse_str( html_entity_decode( $this->args['custom']['data-query'] ), $query_args );
+			}
+			$pages = get_posts( array_merge( array(
+				'post_type' => 'page',
+				'orderby'   => 'title',
+				'order'     => 'ASC',
+				'posts_per_page' => -1,
+				'post_status' => 'publish',
+			), $query_args ) );
+			echo '<select ' . $this->parse_atts() . '>';
+			echo '<option value="">' . esc_html( $this->args['custom']['data-placeholder'] ) . '</option>';
+			foreach ( $pages as $page ) {
+				$selected = in_array( $page->ID, $ids ) ? ' selected' : '';
+				echo '<option value="' . esc_attr( $page->ID ) . '"' . $selected . '>' . esc_html( $page->post_title ) . '</option>';
+			}
+			echo '</select>';
+		}
 		$this->after_field();
 	}
 

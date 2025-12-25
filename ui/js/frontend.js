@@ -280,12 +280,28 @@ var marketpress = { };
          *
          * @since 3.0
          */
-        initImageLightbox: function( ) {
-            $( '.mp_product_image_link' ).filter( '.mp_lightbox' ).colorbox( {
-                maxWidth: "90%",
-                maxHeight: "90%",
-                close: "&times;"
-            } );
+        initImageLightbox: function() {
+            // Vanilla JS: Öffnet basicLightbox für Produktbilder
+            document.querySelectorAll('.mp_product_image_link.mp_lightbox').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var img = link.querySelector('img');
+                    var src = link.getAttribute('href') || (img ? img.src : null);
+                    if (!src) return;
+                    var html = '<div class="mp-product-lightbox"><div class="mp-product-lightbox-close">&times;</div><img src="' + src + '" style="width:90vw;max-width:1200px;max-height:90vh;object-fit:contain;" /></div>';
+                    var instance = basicLightbox.create(html, {
+                        closable: true,
+                        onShow: function() {
+                            var closeBtn = document.querySelector('.mp-product-lightbox-close');
+                            if (closeBtn) closeBtn.onclick = function() { instance.close(); };
+                            document.addEventListener('keydown', function(ev) {
+                                if (ev.key === 'Escape') instance.close();
+                            }, { once: true });
+                        }
+                    });
+                    instance.show();
+                });
+            });
         },
         /**
          * Initialize product filters/pagination

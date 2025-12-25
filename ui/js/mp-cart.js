@@ -408,36 +408,45 @@ var mp_cart = { };
      * @since 3.0
      */
     mp_cart.initProductOptionsLightbox = function() {
-        $( '.mp_link-buynow' ).filter( '.mp_button-has_variations' ).colorbox( {
-            "close": "x",
-            "href": function() {
-                return $( this ).attr( 'data-href' );
-            },
-            "overlayClose": false,
-            "trapFocus": false,
-            "width": 300,
-            "overlayClose": true,
-            "escKey": true,
-            onLoad: function() {
-                $( "#colorbox" ).removeAttr( "tabindex" ); //remove tabindex before select2 init
-            },
-            onComplete: function() {
-                var selects = document.querySelectorAll('select.mp_select2');
-                selects.forEach(function(el) {
-                    if (typeof SlimSelect !== 'undefined') {
-                        if (!el.slimSelect) {
-                            el.slimSelect = new SlimSelect({
-                                select: el,
-                                placeholder: el.getAttribute('placeholder') || '',
-                                allowDeselect: true,
-                                showSearch: false,
-                                closeOnSelect: !el.hasAttribute('multiple'),
-                            });
-                        }
-                    }
-                });
-            }
-        } );
+        // Vanilla JS: Öffnet basicLightbox für Produktoptionen
+        document.querySelectorAll('.mp_link-buynow.mp_button-has_variations').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var href = btn.getAttribute('data-href');
+                if (!href) return;
+                // AJAX-Content laden
+                fetch(href)
+                    .then(function(response) { return response.text(); })
+                    .then(function(html) {
+                        var instance = basicLightbox.create('<div class="mp-product-options-lightbox"><div class="mp-product-lightbox-close">&times;</div>' + html + '</div>', {
+                            closable: true,
+                            onShow: function() {
+                                var closeBtn = document.querySelector('.mp-product-lightbox-close');
+                                if (closeBtn) closeBtn.onclick = function() { instance.close(); };
+                                document.addEventListener('keydown', function(ev) {
+                                    if (ev.key === 'Escape') instance.close();
+                                }, { once: true });
+                                // SlimSelect für Selects initialisieren
+                                var selects = document.querySelectorAll('.mp-product-options-lightbox select.mp_select2');
+                                selects.forEach(function(el) {
+                                    if (typeof SlimSelect !== 'undefined') {
+                                        if (!el.slimSelect) {
+                                            el.slimSelect = new SlimSelect({
+                                                select: el,
+                                                placeholder: el.getAttribute('placeholder') || '',
+                                                allowDeselect: true,
+                                                showSearch: false,
+                                                closeOnSelect: !el.hasAttribute('multiple'),
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        instance.show();
+                    });
+            });
+        });
     };
 
     /**

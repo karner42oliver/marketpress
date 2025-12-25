@@ -103,7 +103,6 @@ class MP_Store_Settings_Presentation {
 		$this->init_product_page_settings();
 		$this->init_related_product_settings();
 		$this->init_product_list_settings();
-		$this->init_social_settings();
 		$this->init_store_pages_slugs_settings();
 		$this->init_miscellaneous_settings();
 	}
@@ -227,93 +226,6 @@ class MP_Store_Settings_Presentation {
 			'placeholder' => __( 'Choose a Page', 'mp' ),
 			'validation'  => array(
 				'required' => true,
-			),
-		) );
-	}
-
-	/**
-	 * Init the product list settings
-	 *
-	 * @since 3.0
-	 * @access public
-	 */
-	public function init_social_settings() {
-		$metabox = new PSOURCE_Metabox( array(
-			'id'          => 'mp-settings-presentation-social',
-			'page_slugs'  => array( 'store-settings-presentation', 'store-settings_page_store-settings-presentation' ),
-			'title'       => __( 'Social Settings', 'mp' ),
-			'option_name' => 'mp_settings',
-		) );
-
-		$metabox->add_field( 'section', array(
-			'name'  => 'section_pinterest',
-			'title' => __( 'Pinterest', 'mp' ),
-		) );
-
-		$metabox->add_field( 'radio_group', array(
-			'name'          => 'social[pinterest][show_pinit_button]',
-			'label'         => array( 'text' => __( 'Show "Pin It" Button', 'mp' ) ),
-			'options'       => array(
-				'off'         => __( 'Off', 'mp' ),
-				'single_view' => __( 'Single View', 'mp' ),
-				'all_view'    => __( 'All View', 'mp' ),
-			),
-			'default_value' => 'off',
-		) );
-
-		$metabox->add_field( 'radio_group', array(
-			'name'    => 'social[pinterest][show_pin_count]',
-			'label'   => array( 'text' => __( 'Pin Count', 'mp' ) ),
-			'options' => array(
-				'none'   => __( 'None', 'mp' ),
-				'above'  => __( 'Above', 'mp' ),
-				'beside' => __( 'Beside', 'mp' ),
-			),
-		) );
-
-		$metabox->add_field( 'section', array(
-			'name'  => 'section_facebook',
-			'title' => __( 'Facebook', 'mp' ),
-		) );
-
-		$metabox->add_field( 'radio_group', array(
-			'name'          => 'social[facebook][show_facebook_like_button]',
-			'label'         => array( 'text' => __( 'Show Facebook Like Button', 'mp' ) ),
-			'options'       => array(
-				'off'         => __( 'Off', 'mp' ),
-				'single_view' => __( 'Single View', 'mp' ),
-				'all_view'    => __( 'All View', 'mp' ),
-			),
-			'default_value' => 'off',
-		) );
-
-		$metabox->add_field( 'radio_group', array(
-			'name'    => 'social[facebook][action]',
-			'label'   => array( 'text' => __( 'Action', 'mp' ) ),
-			'options' => array(
-				'like'      => __( 'Like', 'mp' ),
-				'recommend' => __( 'Recommend', 'mp' ),
-			),
-		) );
-
-		$metabox->add_field( 'checkbox', array(
-			'name'    => 'social[facebook][show_share]',
-			'label'   => array( 'text' => __( 'Show Share Button', 'mp' ) ),
-			'message' => __( 'Yes', 'mp' ),
-		) );
-
-		$metabox->add_field( 'section', array(
-			'name'  => 'section_twitter',
-			'title' => __( 'Twitter', 'mp' ),
-		) );
-
-		$metabox->add_field( 'radio_group', array(
-			'name'    => 'social[twitter][show_twitter_button]',
-			'label'   => array( 'text' => __( 'Show Twitter Button', 'mp' ) ),
-			'options' => array(
-				'off'         => __( 'Off', 'mp' ),
-				'single_view' => __( 'Single View', 'mp' ),
-				'all_view'    => __( 'All View', 'mp' ),
 			),
 		) );
 	}
