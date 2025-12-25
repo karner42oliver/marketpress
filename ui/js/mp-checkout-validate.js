@@ -5,72 +5,52 @@
 export function validateCheckoutForm(form) {
   const errors = {};
 
-  // Login Felder (wenn sichtbar)
+  // Login Felder (wenn sichtbar und required)
   const email = form.querySelector('[name="mp_login_email"]');
-  if (email && email.offsetParent !== null && !email.value.trim()) {
+  if (email && email.offsetParent !== null && email.required && !email.value.trim()) {
     errors['mp_login_email'] = 'E-Mail ist erforderlich.';
   }
   const pass = form.querySelector('[name="mp_login_password"]');
-  if (pass && pass.offsetParent !== null && !pass.value.trim()) {
+  if (pass && pass.offsetParent !== null && pass.required && !pass.value.trim()) {
     errors['mp_login_password'] = 'Passwort ist erforderlich.';
   }
 
-  // Pflichtfelder für Rechnungsadresse
-  const billingFields = [
-    { name: 'billing[first_name]', label: 'Vorname' },
-    { name: 'billing[last_name]', label: 'Nachname' },
-    { name: 'billing[email]', label: 'E-Mail' },
-    { name: 'billing[address1]', label: 'Adresse' },
-    { name: 'billing[city]', label: 'Stadt' },
-    { name: 'billing[country]', label: 'Land' },
-    { name: 'billing[state]', label: 'Bundesland' },
-    { name: 'billing[zip]', label: 'PLZ' }
-  ];
-  billingFields.forEach(f => {
-    const input = form.querySelector(`[name="${f.name}"]`);
-    if (input && !input.value.trim()) {
-      errors[f.name] = `${f.label} ist erforderlich.`;
-    }
-  });
-
-  // Wenn Lieferadresse aktiviert, auch diese prüfen
-  const shippingCheckbox = form.querySelector('input[name="enable_shipping_address"]');
-  if (shippingCheckbox && shippingCheckbox.checked) {
-    const shippingFields = [
-      { name: 'shipping[first_name]', label: 'Vorname (Lieferung)' },
-      { name: 'shipping[last_name]', label: 'Nachname (Lieferung)' },
-      { name: 'shipping[email]', label: 'E-Mail (Lieferung)' },
-      { name: 'shipping[address1]', label: 'Adresse (Lieferung)' },
-      { name: 'shipping[city]', label: 'Stadt (Lieferung)' },
-      { name: 'shipping[country]', label: 'Land (Lieferung)' },
-      { name: 'shipping[state]', label: 'Bundesland (Lieferung)' },
-      { name: 'shipping[zip]', label: 'PLZ (Lieferung)' }
-    ];
-    shippingFields.forEach(f => {
-      const input = form.querySelector(`[name="${f.name}"]`);
-      if (input && !input.value.trim()) {
-        errors[f.name] = `${f.label} ist erforderlich.`;
+  // Alle sichtbaren und required Rechnungsfelder prüfen
+  form.querySelectorAll('[name^="billing["][required]')
+    .forEach(input => {
+      if (input.offsetParent !== null && !input.value.trim()) {
+        errors[input.name] = (input.labels && input.labels[0] ? input.labels[0].innerText : 'Pflichtfeld') + ' ist erforderlich.';
       }
     });
+
+  // Wenn Lieferadresse aktiviert, alle sichtbaren und required Lieferfelder prüfen
+  const shippingCheckbox = form.querySelector('input[name="enable_shipping_address"]');
+  if (shippingCheckbox && shippingCheckbox.checked) {
+    form.querySelectorAll('[name^="shipping["][required]')
+      .forEach(input => {
+        if (input.offsetParent !== null && !input.value.trim()) {
+          errors[input.name] = (input.labels && input.labels[0] ? input.labels[0].innerText : 'Pflichtfeld') + ' ist erforderlich.';
+        }
+      });
   }
 
   // Versandmethode (shipping_method) required
   const shippingMethod = form.querySelector('[name="shipping_method"]');
-  if (shippingMethod && !shippingMethod.value) {
+  if (shippingMethod && shippingMethod.required && shippingMethod.offsetParent !== null && !shippingMethod.value) {
     errors['shipping_method'] = 'Bitte wähle eine Versandart.';
   }
 
-  // Kreditkartenfelder (wenn vorhanden)
+  // Kreditkartenfelder (wenn vorhanden und required)
   const ccNum = form.querySelector('.mp-input-cc-num');
-  if (ccNum && ccNum.offsetParent !== null && !ccNum.value.trim()) {
+  if (ccNum && ccNum.offsetParent !== null && ccNum.required && !ccNum.value.trim()) {
     errors['cc_num'] = 'Kreditkartennummer ist erforderlich.';
   }
   const ccExp = form.querySelector('.mp-input-cc-exp');
-  if (ccExp && ccExp.offsetParent !== null && !ccExp.value.trim()) {
+  if (ccExp && ccExp.offsetParent !== null && ccExp.required && !ccExp.value.trim()) {
     errors['cc_exp'] = 'Ablaufdatum ist erforderlich.';
   }
   const ccCvc = form.querySelector('.mp-input-cc-cvc');
-  if (ccCvc && ccCvc.offsetParent !== null && !ccCvc.value.trim()) {
+  if (ccCvc && ccCvc.offsetParent !== null && ccCvc.required && !ccCvc.value.trim()) {
     errors['cc_cvc'] = 'CVC ist erforderlich.';
   }
 

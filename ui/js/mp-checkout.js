@@ -172,17 +172,22 @@ mp_checkout = {
           let valid = true;
           let firstInvalid = null;
           if (current) {
+            // Vor Validierung: Alle Fehlerklassen und Hinweise im aktuellen Schritt entfernen
+            current.querySelectorAll('.mp_form_input_error').forEach(el => el.classList.remove('mp_form_input_error'));
+            current.querySelectorAll('.mp_field_required_hint').forEach(el => el.remove());
             current.querySelectorAll('[required], .mp_field_required').forEach(function(input) {
               let el = input;
               if (el.tagName === 'SPAN' && el.classList.contains('mp_field_required')) {
                 el = el.closest('.mp_checkout_field').querySelector('input, select, textarea');
               }
+              // Nur sichtbare Felder prüfen
+              if (!el || el.offsetParent === null) return;
               // Hinweis-Element suchen oder erstellen
               let hint = null;
               if (el) {
                 hint = el.closest('.mp_checkout_field')?.querySelector('.mp_field_required_hint');
               }
-              if (el && !el.value) {
+              if (!el.value) {
                 el.classList.add('mp_form_input_error');
                 valid = false;
                 if (!firstInvalid) firstInvalid = el;
@@ -197,7 +202,7 @@ mp_checkout = {
                 } else {
                   hint.style.display = 'block';
                 }
-              } else if (el) {
+              } else {
                 el.classList.remove('mp_form_input_error');
                 if (hint) {
                   hint.style.display = 'none';
@@ -224,11 +229,13 @@ mp_checkout = {
               if (el.tagName === 'SPAN' && el.classList.contains('mp_field_required')) {
                 el = el.closest('.mp_checkout_field').querySelector('input, select, textarea');
               }
-              if (el && !el.value) {
+              // Nur sichtbare Felder prüfen
+              if (!el || el.offsetParent === null) return;
+              if (!el.value) {
                 el.classList.add('mp_form_input_error');
                 valid = false;
                 if (!firstInvalid) firstInvalid = el;
-              } else if (el) {
+              } else {
                 el.classList.remove('mp_form_input_error');
               }
             });
