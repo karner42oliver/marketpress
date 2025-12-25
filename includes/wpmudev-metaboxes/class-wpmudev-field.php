@@ -184,6 +184,10 @@ class WPMUDEV_Field {
 
 		$this->init_conditional_logic();
 		$this->init_validation();
+		// Setze data-msg-required, wenn custom_validation_message vorhanden ist
+		if (!empty($this->args['custom_validation_message'])) {
+			$this->args['custom']['data-msg-required'] = esc_attr($this->args['custom_validation_message']);
+		}
 		$this->on_creation( $this->args );
 	}
 

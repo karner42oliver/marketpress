@@ -3,29 +3,58 @@
 function addCustomValidation() {
     const forms = document.querySelectorAll('form#post, form#mp-main-form, form.bulk-form');
     forms.forEach(form => {
+        // Sofortige Fehlerentfernung beim Ausfüllen/Ändern
+        form.addEventListener('input', function(e) {
+            const field = e.target;
+            if (field.classList && field.classList.contains('wpmudev-error-message')) return;
+            // Pflichtfeld prüfen
+            if (field.matches('[data-rule-required="true"], [required]')) {
+                removeError(field);
+                if (!isFieldFilled(field, form)) {
+                    showError(field, field.getAttribute('data-msg-required') || 'Dieses Feld ist erforderlich.');
+                }
+            }
+        }, true);
+        form.addEventListener('change', function(e) {
+            const field = e.target;
+            if (field.classList && field.classList.contains('wpmudev-error-message')) return;
+            if (field.matches('[data-rule-required="true"], [required]')) {
+                removeError(field);
+                if (!isFieldFilled(field, form)) {
+                    showError(field, field.getAttribute('data-msg-required') || 'Dieses Feld ist erforderlich.');
+                }
+            }
+        }, true);
+
         form.addEventListener('submit', function(e) {
             let valid = true;
+            let debugEmptyFields = [];
             // Remove old errors
             form.querySelectorAll('.wpmudev-error-message').forEach(el => el.remove());
 
             // 1. Pflichtfelder prüfen (data-rule-required oder required)
             const requiredFields = form.querySelectorAll('[data-rule-required="true"], [required]');
             requiredFields.forEach(field => {
-                // Für Checkboxen und Radios: checked prüfen, sonst value
-                let isEmpty = false;
-                if (field.type === 'checkbox' || field.type === 'radio') {
-                    const group = form.querySelectorAll('[name="' + field.name + '"]');
-                    isEmpty = !Array.from(group).some(f => f.checked);
-                } else {
-                    isEmpty = !field.value || field.value.trim() === '';
+                // Nur sichtbare und nicht deaktivierte Felder prüfen
+                if (
+                    field.offsetParent === null || // ausgeblendet (display:none, hidden ancestor)
+                    field.disabled ||
+                    field.readOnly ||
+                    field.type === 'hidden'
+                ) {
+                    return;
                 }
-                if (isEmpty) {
+                removeError(field);
+                if (!isFieldFilled(field, form)) {
                     valid = false;
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'wpmudev-error-message';
-                    errorDiv.style.color = 'red';
-                    errorDiv.textContent = field.getAttribute('data-msg-required') || 'Dieses Feld ist erforderlich.';
-                    field.parentNode.appendChild(errorDiv);
+                    showError(field, field.getAttribute('data-msg-required') || 'Dieses Feld ist erforderlich.');
+                    debugEmptyFields.push({
+                        name: field.name,
+                        id: field.id,
+                        type: field.type,
+                        value: field.value,
+                        outerHTML: field.outerHTML
+                    });
                 }
             });
 
@@ -50,21 +79,52 @@ function addCustomValidation() {
                         // Add more rules as needed
                         if(error) {
                             valid = false;
-                            const errorDiv = document.createElement('div');
-                            errorDiv.className = 'wpmudev-error-message';
-                            errorDiv.style.color = 'red';
-                            errorDiv.textContent = msg;
-                            field.parentNode.appendChild(errorDiv);
+                            showError(field, msg);
+                            debugEmptyFields.push({
+                                name: field.name,
+                                id: field.id,
+                                type: field.type,
+                                value: field.value,
+                                outerHTML: field.outerHTML
+                            });
                         }
                     }
                 });
             });
+            if(debugEmptyFields.length > 0) {
+                console.warn('MARKETPRESS VALIDATION DEBUG: Diese Felder wurden als leer/ungültig erkannt:', debugEmptyFields);
+            }
             if(!valid) {
                 e.preventDefault();
-                alert(WPMUDEV_Metaboxes.form_error_msg.replace(/%s1/g, '1 Fehler').replace(/%s2/g, 'ist aufgetreten'));
+                alert(WPMUDEV_Metaboxes.form_error_msg.replace(/%s1/g, debugEmptyFields.length + ' Fehler').replace(/%s2/g, 'sind aufgetreten'));
             }
         });
     });
+
+    // Hilfsfunktionen
+    function isFieldFilled(field, form) {
+        if (field.type === 'checkbox' || field.type === 'radio') {
+            const group = form.querySelectorAll('[name="' + field.name + '"]');
+            return Array.from(group).some(f => f.checked);
+        }
+        if (field.tagName === 'SELECT') {
+            return field.value && field.value !== '';
+        }
+        return field.value && field.value.trim() !== '';
+    }
+    function showError(field, msg) {
+        removeError(field);
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'wpmudev-error-message';
+        errorDiv.style.color = 'red';
+        errorDiv.textContent = msg;
+        field.parentNode.appendChild(errorDiv);
+    }
+    function removeError(field) {
+        if (!field.parentNode) return;
+        const old = field.parentNode.querySelector('.wpmudev-error-message');
+        if (old) old.remove();
+    }
 }
 
 ( function( $ ) {

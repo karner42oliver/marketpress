@@ -614,70 +614,10 @@ class WPMUDEV_Metabox {
 	 * @access public
 	 */
 	public function admin_enqueue_scripts() {
-		// Deregister deprecated jQuery UI scripts to prevent WordPress/plugins from loading them
-		wp_deregister_script( 'jquery-ui-core' );
-		wp_deregister_script( 'jquery-ui-widget' );
-		wp_deregister_script( 'jquery-ui-mouse' );
-		wp_deregister_script( 'jquery-ui-sortable' );
-		wp_deregister_script( 'jquery-ui-draggable' );
-		wp_deregister_script( 'jquery-ui-droppable' );
-		wp_deregister_script( 'jquery-ui-resizable' );
-		wp_deregister_script( 'jquery-ui-selectable' );
-		wp_deregister_script( 'jquery-ui-datepicker' );
-		wp_deregister_script( 'jquery-ui-tabs' );
-		wp_deregister_script( 'jquery-ui-dialog' );
-		wp_deregister_script( 'jquery-ui-button' );
-		wp_deregister_script( 'jquery-ui-accordion' );
-		wp_deregister_script( 'jquery-ui-slider' );
-		wp_deregister_script( 'jquery-ui-progressbar' );
-		wp_deregister_script( 'jquery-ui-spinner' );
-		wp_deregister_script( 'jquery-ui-tooltip' );
-		wp_deregister_script( 'jquery-ui-menu' );
-		wp_deregister_script( 'jquery-ui-autocomplete' );
-		wp_deregister_script( 'jquery-ui-position' );
-		wp_deregister_script( 'jquery-effects-core' );
-		wp_deregister_script( 'jquery-effects-blind' );
-		wp_deregister_script( 'jquery-effects-bounce' );
-		wp_deregister_script( 'jquery-effects-clip' );
-		wp_deregister_script( 'jquery-effects-drop' );
-		wp_deregister_script( 'jquery-effects-explode' );
-		wp_deregister_script( 'jquery-effects-fade' );
-		wp_deregister_script( 'jquery-effects-fold' );
-		wp_deregister_script( 'jquery-effects-highlight' );
-		wp_deregister_script( 'jquery-effects-pulsate' );
-		wp_deregister_script( 'jquery-effects-scale' );
-		wp_deregister_script( 'jquery-effects-shake' );
-		wp_deregister_script( 'jquery-effects-slide' );
-		wp_deregister_script( 'jquery-effects-transfer' );
-		
-		if ( isset( $_GET['page'] ) ) {
-			$page = $_GET['page'];
-		} else {
-			$page = '';
-		}
+		// Nur noch das Vanilla-JS-Admin-Script laden, keine jQuery Validate-Skripte mehr!
+		wp_enqueue_script( 'wpmudev-metaboxes-admin', $this->class_url( 'ui/js/admin.js' ), array(), WPMUDEV_METABOX_VERSION, true );
 
-		//Load MP validation only on MP pages
-		$screenpage = get_current_screen();
-
-		if ( $page == 'store-settings'
-			|| $page == 'store-setup-wizard'
-			|| $page == 'store-settings-presentation' 
-			|| $page == 'store-settings-notifications' 
-			|| $page == 'store-settings-shipping' 
-			|| $page == 'store-settings-payments' 
-			|| $page == 'store-settings-productattributes' 
-			|| $page == 'store-settings-capabilities'
-			|| $page == 'store-settings-import'
-			|| $page == 'store-settings-addons'
-			|| ( isset( $_GET['taxonomy'] ) && ($_GET['taxonomy'] == 'product_category' || $_GET['taxonomy'] == 'product_tag') )
-			|| ( isset( $_GET['post_type'] ) && ($_GET['post_type'] == 'mp_coupon' || $_GET['post_type'] == 'mp_order' || $_GET['post_type'] == 'product' ) ) 
-			|| ( isset( $screenpage->post_type ) && ( $screenpage->post_type == MP_Product::get_post_type() || $screenpage->post_type == "mp_order" || $screenpage->post_type == "mp_coupon") ) )  {
-				wp_register_script( 'jquery-validate', $this->class_url( 'ui/js/jquery.validate.min.js' ), array( 'jquery' ), '1.12' );
-			wp_register_script( 'jquery-validate-methods', $this->class_url( 'ui/js/jquery.validate.methods.min.js' ), array( 'jquery-validate' ), '1.12' );
-			wp_enqueue_script( 'wpmudev-metaboxes-admin', $this->class_url( 'ui/js/admin.js' ), array(
-				'jquery-validate-methods'
-			), WPMUDEV_METABOX_VERSION, true );
-	}		$messages = array(
+		$messages = array(
 			'alphanumeric_error_msg' => __( 'Please enter only letters and numbers', 'wpmudev_metaboxes' ),
 			'lessthan_error_msg'     => __( 'Value must be less than {0}', 'wpmudev_metaboxes' ),
 		);

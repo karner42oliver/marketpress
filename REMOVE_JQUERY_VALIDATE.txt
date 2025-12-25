@@ -1,0 +1,6 @@
+Die folgenden Dateien wurden entfernt, da jQuery Validate nicht mehr verwendet wird:
+- ui/js/jquery.validate.js
+- ui/js/jquery.validate.min.js
+- ui/js/jquery.validate.methods.min.js
+- includes/wpmudev-metaboxes/ui/js/jquery.validate.min.js
+- includes/wpmudev-metaboxes/ui/js/jquery.validate.methods.min.js
