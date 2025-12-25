@@ -1,12 +1,71 @@
-jQuery.validator.addMethod( 'alphanumeric', function( value, element ) {
-    return this.optional( element ) || new RegExp( '[a-z0-9]{' + value.length + '}', 'ig' ).test( value );
-}, WPMUDEV_Metaboxes_Validation_Messages.alphanumeric_error_msg );
 
-jQuery.validator.addMethod( 'lessthan', function( value, element, param ) {
-    var $elm = jQuery( element );
-    var $parent = ( $elm.closest( '.wpmudev-subfield-group' ).length > 0 ) ? $elm.closest( '.wpmudev-subfield-group' ) : $elm.closest( '.wpmudev-field' );
-    return this.optional( element ) || value <= $parent.find( param ).val();
-}, jQuery.validator.format( WPMUDEV_Metaboxes_Validation_Messages.lessthan_error_msg ) );
+// Vanilla JS Custom Validation
+function addCustomValidation() {
+    const forms = document.querySelectorAll('form#post, form#mp-main-form, form.bulk-form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            let valid = true;
+            // Remove old errors
+            form.querySelectorAll('.wpmudev-error-message').forEach(el => el.remove());
+
+            // 1. Pflichtfelder prüfen (data-rule-required oder required)
+            const requiredFields = form.querySelectorAll('[data-rule-required="true"], [required]');
+            requiredFields.forEach(field => {
+                // Für Checkboxen und Radios: checked prüfen, sonst value
+                let isEmpty = false;
+                if (field.type === 'checkbox' || field.type === 'radio') {
+                    const group = form.querySelectorAll('[name="' + field.name + '"]');
+                    isEmpty = !Array.from(group).some(f => f.checked);
+                } else {
+                    isEmpty = !field.value || field.value.trim() === '';
+                }
+                if (isEmpty) {
+                    valid = false;
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'wpmudev-error-message';
+                    errorDiv.style.color = 'red';
+                    errorDiv.textContent = field.getAttribute('data-msg-required') || 'Dieses Feld ist erforderlich.';
+                    field.parentNode.appendChild(errorDiv);
+                }
+            });
+
+            // 2. Custom-Validierungen prüfen
+            form.querySelectorAll('[data-custom-validation]').forEach(field => {
+                Array.from(field.attributes).forEach(attr => {
+                    if(attr.name.startsWith('data-rule-custom-')) {
+                        const ruleName = attr.name.replace('data-rule-custom-', '');
+                        const ruleVal = attr.value;
+                        const msg = field.getAttribute('data-msg-' + ruleName) || 'Ungültiger Wert';
+                        let error = false;
+                        if(ruleName === 'alphanumeric') {
+                            if(!new RegExp('^[a-z0-9]+$', 'i').test(field.value)) error = true;
+                        }
+                        if(ruleName === 'lessthan') {
+                            const parent = field.closest('.wpmudev-subfield-group') || field.closest('.wpmudev-field');
+                            if(parent) {
+                                const compare = parent.querySelector(ruleVal);
+                                if(compare && field.value > compare.value) error = true;
+                            }
+                        }
+                        // Add more rules as needed
+                        if(error) {
+                            valid = false;
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'wpmudev-error-message';
+                            errorDiv.style.color = 'red';
+                            errorDiv.textContent = msg;
+                            field.parentNode.appendChild(errorDiv);
+                        }
+                    }
+                });
+            });
+            if(!valid) {
+                e.preventDefault();
+                alert(WPMUDEV_Metaboxes.form_error_msg.replace(/%s1/g, '1 Fehler').replace(/%s2/g, 'ist aufgetreten'));
+            }
+        });
+    });
+}
 
 ( function( $ ) {
     $( document ).ready( function() {
@@ -52,16 +111,26 @@ jQuery.validator.addMethod( 'lessthan', function( value, element, param ) {
         $( '.wpmudev-postbox' ).find( ':checkbox, :radio, select' ).on('change', initConditionals );
     }
 
+
+    function updateRepeaterIndexes() {
+        $('.wpmudev-subfields').each(function() {
+            $(this).find('.wpmudev-subfield-group-index span').each(function(idx) {
+                $(this).text(idx + 1);
+            });
+        });
+    }
+
     $( document ).on( 'wpmudev_repeater_field/after_add_field_group', function( e ) {
         initConditionals();
+        updateRepeaterIndexes();
     } );
 
-    jQuery( document ).ready( function( $ ) {
-        initValidation();
+    document.addEventListener('DOMContentLoaded', function() {
+        addCustomValidation();
         initRowShading();
         initToolTips();
         initPostboxAccordions();
-    } );
+    });
 
     var initPostboxAccordions = function() {
         $( '#mp-main-form' ).find( '.wpmudev-postbox' ).find( '.hndle, .handlediv' ).on('click', function() {
@@ -301,87 +370,6 @@ jQuery.validator.addMethod( 'lessthan', function( value, element, param ) {
         } ).next( 'p.submit' ).fadeIn( 500 )
     };
 
-    var initValidation = function() {
-        var $form = $( "form#post, form#mp-main-form, form.bulk-form" );
-
-        $form.find( '[data-custom-validation]' ).each( function() {
-            var $this = $( this );
-            var atts = this.attributes;
-            var rule = { };
-
-            $.each( atts, function( index, attr ) {
-                if ( attr.name.indexOf( 'data-rule-custom-' ) >= 0 ) {
-                    rule.name = attr.name.replace( 'data-rule-custom-', '' );
-                    rule.val = attr.value;
-                }
-            } );
-
-            rule.message = $this.attr( 'data-msg-' + rule.name );
-
-            $.validator.addMethod( ruleName, function( value, element, params ) {
-                return this.optional( element ) || new RegExp( rule.val + '{' + value.length + '}', 'ig' ).test( value );
-            }, rule.message );
-        } );
-
-        //initialize the form validation		
-        var validator = $form.validate( {
-            errorPlacement: function( error, element ) {
-                error.appendTo( element.parent() );
-            },
-            focusInvalid: false,
-            highlight: function( element, errorClass ) {
-                var $elm = $( element );
-                var $tabWrap = $elm.closest( '.wpmudev-field-tab-wrap' );
-
-                if ( $tabWrap.length > 0 ) {
-                    var slug = $tabWrap.attr( 'data-slug' );
-                    var $tabWrapParent = $elm.closest( '.wpmudev-subfield-group, .wpmudev-fields' );
-                    var $tabLink = $tabWrapParent.find( '.wpmudev-field-tab-label-link' ).filter( '[href="#' + slug + '"]' );
-                    $tabLink.addClass( 'has-error' );
-                }
-            },
-            unhighlight: function( element, errorClass, validClass ) {
-                var $elm = $( element );
-                var $tabWrap = $elm.closest( '.wpmudev-field-tab-wrap' );
-
-                if ( $tabWrap.length > 0 ) {
-                    if ( $tabWrap.find( 'label.error' ).filter( ':visible' ).length > 0 ) {
-                        // There are other errors in this tab group - bail
-                        return;
-                    }
-
-                    var slug = $tabWrap.attr( 'data-slug' );
-                    var $tabWrapParent = $elm.closest( '.wpmudev-subfield-group, .wpmudev-fields' );
-                    var $tabLink = $tabWrapParent.find( '.wpmudev-field-tab-label-link' ).filter( '[href="#' + slug + '"]' );
-                    $tabLink.removeClass( 'has-error' );
-                }
-            },
-            ignore: function( index, element ) {
-                var $elm = $( element );
-                // ignore all elements that are hidden or disabled
-                return ( $elm.is( ':hidden' ) || $elm.prop( 'disabled' ) );
-            },
-            wrapper: "div"
-        } );
-
-        $form.on( 'invalid-form.validate', function() {
-            var errorCount = validator.numberOfInvalids();
-            var msg = WPMUDEV_Metaboxes.form_error_msg;
-
-            if ( errorCount == 1 ) {
-                msg = msg.replace( /%s1/g, errorCount + ' ' + WPMUDEV_Metaboxes.error ).replace( /%s2/g, WPMUDEV_Metaboxes.has );
-            } else {
-                msg = msg.replace( /%s1/g, errorCount + ' ' + WPMUDEV_Metaboxes.errors ).replace( /%s2/g, WPMUDEV_Metaboxes.have );
-            }
-
-            alert( msg );
-        } );
-
-        $form.find( '#publish, #save-post,.save-bulk-form, [type="submit"]' ).on('click', function( e ) {
-            if ( !$form.valid() ) {
-                e.preventDefault();
-            }
-        } );
-    }
+    // jQuery Validate-Logik entfernt, Vanilla JS übernimmt die Validierung
 
 }( jQuery ) );
