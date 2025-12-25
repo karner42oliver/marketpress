@@ -37,7 +37,7 @@ class MP_Shipping_Pickup extends MP_Shipping_API {
 	 */
 	/* function show_instructions_confirm_page( $content ) {
 	  global $mp;
-	  $settings = $mp->get_setting( 'shipping' );
+	$settings = mp_get_setting( 'shipping' );
 
 	  $instructions = isset( $settings[ 'pickup' ][ 'pickup-instructions' ] ) ? $settings[ 'pickup' ][ 'pickup-instructions' ] : false;
 	  if ( $instructions ) {
@@ -56,7 +56,7 @@ class MP_Shipping_Pickup extends MP_Shipping_API {
 		$used_pickup	 = ( isset( $shipping_option ) && $shipping_option == 'pickup' ) ? true : false;
 
 		if ( $used_pickup ) {
-			$settings = $mp->get_setting( 'shipping' );
+			$settings = mp_get_setting( 'shipping' );
 			$html .= '<h3>' . __( 'Pickup Instructions', 'mp' ) . '</h3>' . ( $settings[ 'pickup' ][ 'pickup-instructions' ] );
 		}
 

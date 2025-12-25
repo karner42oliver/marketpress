@@ -68,7 +68,7 @@ class MP_Dashboard_Widgets {
 				'message_valid_number_required'			 => __( 'Valid number is required', 'mp' ),
 				'message_input_required'				 => __( 'Input is required', 'mp' ),
 				'saving_message'						 => __( 'Please wait...saving in progress...', 'mp' ),
-				'placeholder_image'						 => $mp->plugin_url( '/includes/admin/ui/images/img-placeholder.jpg' )
+				'placeholder_image'						 => mp_plugin_url( '/includes/admin/ui/images/img-placeholder.jpg' )
 			) );
 		}
 	}

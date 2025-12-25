@@ -163,7 +163,7 @@ class MP_Ajax {
 						} else {
 							global $mp;
 							?>
-							<img width="75" height="75" src="<?php echo $mp->plugin_url( '/includes/admin/ui/images/img-placeholder.jpg' ); ?>" />
+							<img width="75" height="75" src="<?php echo mp_plugin_url( '/includes/admin/ui/images/img-placeholder.jpg' ); ?>" />
 						<?php }
 						?>
 					</div>

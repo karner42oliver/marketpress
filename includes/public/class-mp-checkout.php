@@ -78,7 +78,7 @@ class MP_Checkout {
 		$is_download_only	 = $cart->is_download_only();
 		$this->_sections	 = apply_filters( 'mp_checkout/sections_array', array(
 			'login-register'			 => __( 'Anmelden/Registrieren', 'mp' ),
-			'billing-shipping-address'	 => ( !mp()->download_only_cart( mp_cart() ) ) ? __( 'Rechnungs-/Lieferadresse', 'mp' ) : __( 'Abrechnungsdaten', 'mp' ),
+			'billing-shipping-address'	 => ( !$is_download_only ) ? __( 'Rechnungs-/Lieferadresse', 'mp' ) : __( 'Abrechnungsdaten', 'mp' ),
 			'shipping'					 => __( 'Versandart', 'mp' ),
 			'order-review-payment'		 => __( 'Bestellung/Zahlung überprüfen', 'mp' ),
 		) );
@@ -283,7 +283,7 @@ class MP_Checkout {
 			),
 		);
 
-		if ( mp()->download_only_cart( mp_cart() ) && mp_get_setting( 'details_collection' ) == "contact" ) {
+		if ( mp_cart()->is_download_only() && mp_get_setting( 'details_collection' ) == "contact" ) {
 			$address_fields = array(
 				array(
 					'type'		 => 'complex',
@@ -544,18 +544,24 @@ class MP_Checkout {
 
 		if ( $payment_method = mp_get_post_value( 'payment_method' ) ) {
 			$cart			 = mp_cart();
+			$is_download_only = $cart->is_download_only();
 			$billing_info	 = mp_get_user_address( 'billing' );
-			$shipping_info	 = mp_get_user_address( 'shipping' );
+			$this->_sections = apply_filters( 'mp_checkout/sections_array', array(
+				   'login-register'             => __( 'Anmelden/Registrieren', 'mp' ),
+				   'billing-shipping-address'   => ( !$is_download_only ) ? __( 'Rechnungs-/Lieferadresse', 'mp' ) : __( 'Abrechnungsdaten', 'mp' ),
+				   'shipping'                   => __( 'Versandart', 'mp' ),
+				   'order-review-payment'       => __( 'Bestellung/Zahlung überprüfen', 'mp' ),
+			   ) );
 
-			/**
-			 * For gateways to tie into and process payment
-			 *
-			 * @since 3.0
-			 * @param MP_Cart $cart An MP_Cart object.
-			 * @param array $billing_info An array of buyer billing info.
-			 * @param array $shipping_info An array of buyer shipping info.
-			 */
-			do_action( 'mp_process_payment_' . $payment_method, $cart, $billing_info, $shipping_info );
+			   /**
+				* For gateways to tie into and process payment
+				*
+				* @since 3.0
+				* @param MP_Cart $cart An MP_Cart object.
+				* @param array $billing_info An array of buyer billing info.
+				* @param array $shipping_info An array of buyer shipping info.
+				*/
+			   do_action( 'mp_process_payment_' . $payment_method, $cart, $billing_info, $shipping_info );
 
 			if ( $this->has_errors() ) {
 				// There are errors - bail
@@ -1226,7 +1232,7 @@ class MP_Checkout {
 		$cart				 = mp_cart();
 		$is_download_only	 = $cart->is_download_only();
 
-		if ( !mp()->download_only_cart( mp_cart() ) ) {
+		if ( !mp_cart()->is_download_only() ) {
 			$html .= '
 					<div class="mp_checkout_field mp_checkout_checkbox">
 						<label class="mp_form_label"><input type="checkbox" class="mp_form_checkbox" name="enable_shipping_address" value="1" autocomplete="off" ' . checked( true, $enable_shipping_address, false ) . '> <span>' . __( 'Lieferadresse weicht von der Rechnungsadresse ab?', 'mp' ) . '</span></label>
@@ -1366,7 +1372,7 @@ class MP_Checkout {
 		$this->address_fields( 'billing', true ) . '
 			</div><!-- end mp_checkout_column -->';
 
-		if ( !mp()->download_only_cart( mp_cart() ) ) {
+		if ( !mp_cart()->is_download_only() ) {
 			$html .= '
 				<div class="mp_checkout_column">
 					<h3 class="mp_sub_title">' . __( 'Shipping Address', 'mp' ) . '</h3>' .

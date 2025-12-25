@@ -97,18 +97,18 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
         $this->version = "2.0"; //api version
 
         //set api urls
-        if ($mp->get_setting('gateways->payfast->mode') == 'test') {
+        if (mp_get_setting('gateways->payfast->mode') == 'test') {
             $this->pfMerchantId = '10000100';
             $this->pfMerchantKey = '46f0cd694581a';
             $this->payfastURL = 'https://sandbox.payfast.co.za/eng/process';
         } else {
-            $this->pfMerchantId =$mp->get_setting('gateways->payfast->merchantid');
-            $this->pfMerchantKey = $mp->get_setting('gateways->payfast->merchantkey');
+            $this->pfMerchantId =mp_get_setting('gateways->payfast->merchantid');
+            $this->pfMerchantKey = mp_get_setting('gateways->payfast->merchantkey');
             $this->payfastURL = 'https://www.payfast.co.za/eng/process';
         }
-        $this->test_mode = $mp->get_setting('gateways->payfast->mode') == 'test' ? true : false;
+        $this->test_mode = mp_get_setting('gateways->payfast->mode') == 'test' ? true : false;
 
-        $this->passphrase = $mp->get_setting('gateways->payfast->passphrase');
+        $this->passphrase = mp_get_setting('gateways->payfast->passphrase');
     }
 
     /**
@@ -137,7 +137,7 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
      */
     function process_payment_form($cart, $shipping_info) {
         global $mp;
-        $mp->generate_order_id();
+        $order_id = MP_Order::get_id();
     }
 
     /**
@@ -165,22 +165,22 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
     function process_payment( $cart, $billing_info, $shipping_info ) {
         $timestamp = time();
         global $mp;
-        $order_id = $mp->generate_order_id();
+        $order_id = MP_Order::get_id();
         $total = $cart->total( false );
         $amount = number_format( round( $total, 2 ), 2, '.', '' );
 
         // API-URL und Auth
-        $mode = $mp->get_setting('gateways->payfast->mode');
+        $mode = mp_get_setting('gateways->payfast->mode');
         if ( $mode == 'live' ) {
             $api_url = 'https://api.payfast.co.za/transactions';
-            $merchant_id = $mp->get_setting('gateways->payfast->merchantid');
-            $merchant_key = $mp->get_setting('gateways->payfast->merchantkey');
-            $passphrase = $mp->get_setting('gateways->payfast->passphrase');
+            $merchant_id = mp_get_setting('gateways->payfast->merchantid');
+            $merchant_key = mp_get_setting('gateways->payfast->merchantkey');
+            $passphrase = mp_get_setting('gateways->payfast->passphrase');
         } else {
             $api_url = 'https://sandbox.payfast.co.za/transactions';
-            $merchant_id = $mp->get_setting('gateways->payfast->merchantid', '10000100');
-            $merchant_key = $mp->get_setting('gateways->payfast->merchantkey', '46f0cd694581a');
-            $passphrase = $mp->get_setting('gateways->payfast->passphrase');
+            $merchant_id = mp_get_setting('gateways->payfast->merchantid', '10000100');
+            $merchant_key = mp_get_setting('gateways->payfast->merchantkey', '46f0cd694581a');
+            $passphrase = mp_get_setting('gateways->payfast->passphrase');
         }
 
         // Request-Body zusammenbauen
@@ -243,7 +243,7 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
         $payment_info['currency'] = 'ZAR';
         $payment_info['transaction_id'] = $resp_body->uuid;
 
-        $order = $mp->create_order($order_id, $mp->get_cart_contents(), $shipping_info, $payment_info, true);
+        $order = MP_Order::save($order_id, mp_cart()->get_cart_contents(), $shipping_info, $payment_info, true);
         wp_redirect( $this->returnURL );
         exit;
     }
@@ -304,8 +304,8 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
                 <th scope="row"><?php _e('PayFast Mode', 'mp') ?></th>
                 <td>
                     <select name="mp[gateways][payfast][mode]">
-                        <option value="test"<?php selected($mp->get_setting('gateways->payfast->mode'), 'test') ?>><?php _e('Test', 'mp') ?></option>
-                        <option value="live"<?php selected($mp->get_setting('gateways->payfast->mode'), 'live') ?>><?php _e('Live', 'mp') ?></option>
+                        <option value="test"<?php selected(mp_get_setting('gateways->payfast->mode'), 'test') ?>><?php _e('Test', 'mp') ?></option>
+                        <option value="live"<?php selected(mp_get_setting('gateways->payfast->mode'), 'live') ?>><?php _e('Live', 'mp') ?></option>
 
                     </select>
                 </td>
@@ -315,10 +315,10 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
                 <td>
                     <span class="description"><?php _e('You can find your credentials on your integration page.', 'mp')?></span>
                     <p><label><?php _e('Merchant ID', 'mp') ?><br />
-                            <input value="<?php echo esc_attr($mp->get_setting('gateways->payfast->merchantid')); ?>" size="30" name="mp[gateways][payfast][merchantid]" type="text" />
+                            <input value="<?php echo esc_attr(mp_get_setting('gateways->payfast->merchantid')); ?>" size="30" name="mp[gateways][payfast][merchantid]" type="text" />
                     </label></p>
                     <p><label><?php _e('Merchant Key', 'mp') ?><br />
-                        <input value="<?php echo esc_attr($mp->get_setting('gateways->payfast->merchantkey')); ?>" size="20" name="mp[gateways][payfast][merchantkey]" type="text" />
+                        <input value="<?php echo esc_attr(mp_get_setting('gateways->payfast->merchantkey')); ?>" size="20" name="mp[gateways][payfast][merchantkey]" type="text" />
                     </label></p>
                 </td>
             </tr>
@@ -327,7 +327,7 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
                 <td>
                     <span class="description"><?php _e('DO NOT INPUT A VALUE UNLESS YOU HAVE SET ONE IN THE SETTINGS SECTION OF YOUR PAYFAST SETTINGS.', 'mp')?></span>
                     <p>
-                        <input value="<?php echo esc_attr($mp->get_setting('gateways->payfast->passphrase')); ?>" size="20" name="mp[gateways][payfast][passphrase]" type="text" />
+                        <input value="<?php echo esc_attr(mp_get_setting('gateways->payfast->passphrase')); ?>" size="20" name="mp[gateways][payfast][passphrase]" type="text" />
                     </p>
                 </td>
             </tr>
@@ -336,8 +336,8 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
                 <td>
                     <span class="description"><?php _e('This setting will log all PayFast communication to the "payfast.log" file.', 'mp')?></span>
                     <p><select name="mp[gateways][payfast][debug]">
-                        <option value="yes"<?php selected($mp->get_setting('gateways->payfast->debug', 'yes')); ?>><?php _e('Yes', 'mp') ?></option>
-                        <option value="no"<?php selected($mp->get_setting('gateways->payfast->debug', 'no')); ?>><?php _e('No', 'mp') ?></option>
+                        <option value="yes"<?php selected(mp_get_setting('gateways->payfast->debug', 'yes')); ?>><?php _e('Yes', 'mp') ?></option>
+                        <option value="no"<?php selected(mp_get_setting('gateways->payfast->debug', 'no')); ?>><?php _e('No', 'mp') ?></option>
                     </select></p>
                 </td>
             </tr>
@@ -363,7 +363,7 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
         require_once( 'payfast_common.inc' );
         $timestamp = time();
 
-        if ($mp->get_setting('gateways->payfast->debug') == 'no')
+        if (mp_get_setting('gateways->payfast->debug') == 'no')
             define('PF_DEBUG', false);
         else
             define('PF_DEBUG', true);
@@ -431,7 +431,7 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
         if( !$pfError && !$pfDone ) {
             // Get order data
             $pfOrderId = $pfData['m_payment_id'];
-            $order = $mp->get_order($pfOrderId);
+            $order = new MP_Order($pfOrderId);
 
             pflog( "Purchase:\n". print_r( $order, true )  );
 
@@ -475,19 +475,19 @@ class MP_Gateway_PayFast extends MP_Gateway_API {
             $total = array_sum($totals);
 
             //coupon line
-            if ($coupon = $mp->coupon_value($mp->get_coupon_code(), $total))
+            if ($coupon = mp_coupon_value(mp_get_coupon_code(), $total))
             {
                 $total = $coupon['new_total'];
             }
 
             //shipping line
-            if (($shipping_price = $mp->shipping_price(false)) !== false)
+            if (($shipping_price = mp_cart()->shipping_total(false)) !== false)
             {
                 $total = $total + $shipping_price;
             }
 
             //tax line
-            if (($tax_price = $mp->tax_price(false)) !== false)
+            if (($tax_price = mp_cart()->tax_total(false)) !== false)
             {
                 $total = $total + $tax_price;
             }

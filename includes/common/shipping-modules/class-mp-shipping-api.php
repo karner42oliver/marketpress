@@ -213,7 +213,7 @@ if ( !class_exists( 'MP_Shipping_API' ) ) {
 			global $mp;
 
 			echo '<p>';
-			if ( $mp->get_setting( 'shipping->system' ) == 'metric' ) {
+			if ( mp_get_setting( 'shipping->system' ) == 'metric' ) {
 				?>
 				<label><?php _e( 'Weight (Kilograms)', 'mp' ); ?>:<br />
 					<input type="text" size="6" id="mp_shipping_weight" name="mp_shipping_weight" value="<?php echo isset( $shipping_meta[ 'weight' ] ) ? $shipping_meta[ 'weight' ] : '0'; ?>" />
@@ -422,7 +422,7 @@ class MP_Shipping_Handler {
 	}
 
 	function extra_shipping_box_label( $content ) {
-		if ( $mp->get_setting( 'shipping->method' ) == 'calculated' && isset( $_SESSION[ 'mp_shipping_info' ][ 'shipping_option' ] ) && isset( self::$active_plugins[ $_SESSION[ 'mp_shipping_info' ][ 'shipping_option' ] ] ) ) {
+		if ( mp_get_setting( 'shipping->method' ) == 'calculated' && isset( $_SESSION[ 'mp_shipping_info' ][ 'shipping_option' ] ) && isset( self::$active_plugins[ $_SESSION[ 'mp_shipping_info' ][ 'shipping_option' ] ] ) ) {
 			$label = self::$active_plugins[ $_SESSION[ 'mp_shipping_info' ][ 'shipping_option' ] ]->public_name;
 
 			if ( isset( $_SESSION[ 'mp_shipping_info' ][ 'shipping_sub_option' ] ) )
@@ -460,7 +460,7 @@ class MP_Shipping_Handler {
 		//Pick up any service specific fields
 		do_action( 'mp_shipping_process' );
 
-		$options = apply_filters( "mp_shipping_options_$selected", $mp->get_cart_contents(), $address1, $address2, $city, $state, $zip, $country );
+		$options = apply_filters( "mp_shipping_options_$selected", mp_cart()->get_cart_contents(), $address1, $address2, $city, $state, $zip, $country );
 
 		$content = '';
 		if ( count( $options ) && !array_key_exists( 'error', $options ) ) {  //If one of the keys is 'error' then it contains an error message from calculated rates.
@@ -509,7 +509,7 @@ class MP_Shipping_Handler {
 		?>
 		<p>
 			<label><?php _e( 'Extra Shipping Cost', 'mp' ); ?>:<br />
-		<?php echo mp_format_currency(); ?><input type="text" size="6" id="mp_extra_shipping_cost" name="mp_extra_shipping_cost" value="<?php echo!empty( $shipping_meta[ 'extra_cost' ] ) ? $mp->display_currency( $shipping_meta[ 'extra_cost' ] ) : '0.00'; ?>" />
+		<?php echo mp_format_currency(); ?><input type="text" size="6" id="mp_extra_shipping_cost" name="mp_extra_shipping_cost" value="<?php echo!empty( $shipping_meta[ 'extra_cost' ] ) ? mp_display_currency( $shipping_meta[ 'extra_cost' ] ) : '0.00'; ?>" />
 			</label>
 		</p>
 		<?php
