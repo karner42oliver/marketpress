@@ -4,8 +4,8 @@
 /*
 Plugin Name: MarketPress
 Plugin URI:  https://cp-psource.github.io/marketpress/
-Description: The complete WordPress ecommerce plugin - works perfectly with BuddyPress and Multisite too to create a social marketplace, where you can take a percentage! Activate the plugin, adjust your settings then add some products to your store.
-Version:     3.3.6
+Description: The complete ClassicPress ecommerce plugin - works perfectly with Multisite too to create a social marketplace, where you can take a percentage! Activate the plugin, adjust your settings then add some products to your store.
+Version:     1.0.0
 Author:      PSOURCE
 Author URI:  https://github.com/cp-psource
 Text Domain: mp
@@ -34,7 +34,7 @@ Plugin Authors: DerNerd (PSOURCE), Marko Miljus (Incsub), Aaron Edwards (Incsub)
 */
 
 
-define( 'MP_VERSION', '3.3.6' );
+define( 'MP_VERSION', '1.0.0' );
 
 /**
  * Main class Marketpress.
@@ -972,142 +972,6 @@ class Marketpress {
 		}
 	}
 
-	/**
-	 * Catch deprecated functions.
-	 *
-	 * @since 3.0
-	 * @access public
-	 * @param $method
-	 * @param $args
-	 * @return mixed
-	 */
-	public function __call( $method, $args ) {
-		switch ( $method ) {
-			case 'display_currency' :
-				_deprecated_function( $method, '3.0', 'mp_display_currency' );
-
-				return call_user_func_array( 'mp_display_currency', $args );
-				break;
-
-			case 'get_download_url' :
-				_deprecated_function( $method, '3.0', 'MP_Product::download_url' );
-				$product = new MP_Product( $args[0] );
-
-				return $product->download_url( $args[1], false );
-				break;
-
-			case 'mail' :
-				_deprecated_function( $method, '3.0', 'mp_send_email' );
-
-				return call_user_func_array( 'mp_send_email', $args );
-				break;
-
-			case 'order_notification' :
-				_deprecated_function( $method, '3.0', 'MP_Order::send_notifications' );
-				$order = new MP_Order( $args[0] );
-				$order->send_notifications();
-				break;
-
-			case 'get_order' :
-				_deprecated_function( $method, '3.0', 'MP_Order' );
-				break;
-
-			case 'low_stock_notification' :
-				_deprecated_function( $method, '3.0', 'MP_Product::low_stock_notification' );
-				break;
-
-			case 'create_order' :
-				_deprecated_function( $method, '3.0', 'MP_Order::save' );
-				break;
-
-			case 'generate_order_id' :
-				_deprecated_function( $method, '3.0', 'MP_Order::get_id' );
-				$order = new MP_Order();
-
-				return $order->get_id();
-				break;
-
-			case 'cart_checkout_error' :
-				_deprecated_function( $method, '3.0', 'MP_Checkout::add_error OR MP_Checkout::get_error' );
-				break;
-
-			case 'is_valid_zip' :
-				_deprecated_function( $method, '3.0', 'mp_is_valid_zip' );
-
-				return call_user_func_array( 'mp_is_valid_zip', $args );
-				break;
-
-			case 'coupon_applicable' :
-				_deprecated_function( $method, '3.0', 'MP_Coupon::is_applicable' );
-				$is_applicable = false;
-
-				if ( class_exists( 'MP_Coupon' ) ) {
-					$coupon        = new MP_Coupon( $args[0] );
-					$is_applicable = $coupon->is_applicable( $args[1] );
-				}
-
-				return $is_applicable;
-				break;
-
-			case 'download_only_cart' :
-				//_deprecated_function( $method, '3.0', 'MP_Cart::is_download_only' );
-				$cart = MP_Cart::get_instance();
-				$cart->set_id( $args[0] );
-				$is_download_only = $cart->is_download_only();
-				$cart->reset_id();
-
-				return $is_download_only;
-				break;
-
-			case 'get_setting' :
-				_deprecated_function( $method, '3.0', 'mp_get_setting' );
-
-				return call_user_func_array( 'mp_get_setting', $args );
-				break;
-
-			case 'format_currency' :
-				_deprecated_function( $method, '3.0', 'mp_format_currency' );
-
-				return call_user_func_array( 'mp_format_currency', $args );
-				break;
-
-			case 'format_date' :
-				_deprecated_function( $method, '3.0', 'mp_format_date' );
-
-				return call_user_func_array( 'mp_format_date', $args );
-				break;
-
-			case 'product_excerpt' :
-				_deprecated_function( $method, '3.0', 'mp_product_excerpt' );
-
-				return call_user_func_array( 'mp_product_excerpt', $args );
-				break;
-
-			case 'product_price' :
-				_deprecated_function( $method, '3.0', 'mp_product_price' );
-
-				return call_user_func_array( 'mp_product_price', $args );
-				break;
-
-			case 'shipping_price' :
-				_deprecated_function( $method, '3.0', 'MP_Cart::shipping_total' );
-				$mp_cart = mp_cart();
-
-				return call_user_func_array( array( $mp_cart, 'shipping_total' ), $args );
-				break;
-
-			case 'tax_price' :
-				_deprecated_function( $method, '3.0', 'MP_Cart::tax_total' );
-				$mp_cart = mp_cart();
-
-				return call_user_func_array( array( $mp_cart, 'tax_total' ), $args );
-				break;
-
-			default :
-				trigger_error( 'Error! MarketPress doesn\'t have a ' . $method . ' method.', E_USER_ERROR );
-				break;
-		}
-	}
 
 	/**
 	 * Initializes the class variables

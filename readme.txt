@@ -4,7 +4,7 @@ Tags: E-commerce, ecommerce, storefront, sell, store, shopping, cart, payment ga
 Requires at least: 3.7
 Requires PHP: 7.4
 Tested up to: 6.8.1
-Stable tag: 3.3.6
+Stable tag: 1.0.0
 
 Leistungsstarker E-Commerce-Marktplatz für WordPress und Multisite. 100 % kostenlos und keine Erweiterungen erforderlich.
 
@@ -110,7 +110,7 @@ Also, worauf warten Sie noch? Starten Sie noch heute mit <a href="http://premium
 
 == Changelog ==
 
-= 3.3.6 =
+= 1.0.0 =
 
 * Fix Fatal Error in Fallback Funktion
 
