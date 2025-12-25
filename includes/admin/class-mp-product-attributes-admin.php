@@ -53,6 +53,12 @@ class MP_Product_Attributes_Admin {
 					<?php $list_table->display(); ?>
 				</form>
 			</div>
+			<?php
+			// Bearbeitungsformular NUR anzeigen, wenn Attribut ausgewählt ist
+			if (isset($_GET['attribute_id']) && !empty($_GET['attribute_id']) && isset($_GET['action']) && $_GET['action'] === 'mp_edit_product_attribute') {
+				do_action('mp_product_attribute_edit_box');
+			}
+			?>
 		</div>
 		<?php
 	}
@@ -93,13 +99,13 @@ class MP_Product_Attributes_Admin {
 			'hide_empty' => false,
 			'fields'	 => 'id=>name'
 		) );
-		/* $metabox->add_field('advanced_select', array(
-		  'name' => 'product_attribute_categories',
-		  'label' => array('text' => __('Product Categories', 'mp')),
-		  'placeholder' => __( 'Select Product Categories', 'mp' ),
-		  'desc' => __( 'Select the product category/categories that this attribute should be available to. If you don\'t select any categories then this attribute will apply to all product categories.', 'mp' ),
-		  'options' => $cats,
-		  )); */
+				$metabox->add_field('advanced_select', array(
+					'name' => 'product_attribute_categories',
+					'label' => array('text' => __('Product Categories', 'mp')),
+					'placeholder' => __( 'Select Product Categories', 'mp' ),
+					'desc' => __( 'Select the product category/categories that this attribute should be available to. If you don\'t select any categories then this attribute will apply to all product categories.', 'mp' ),
+					'options' => $cats,
+				));
 		$metabox->add_field( 'radio_group', array(
 			'name'			 => 'product_attribute_terms_sort_order',
 			'label'			 => array( 'text' => __( 'Sort Order', 'mp' ) ),
@@ -310,6 +316,11 @@ class MP_Product_Attributes_Admin {
 	 * @uses $wpdb
 	 */
 	public static function save_product_attribute( $metabox ) {
+				// DEBUG: POST-Daten und Metabox ausgeben
+				if (defined('WP_DEBUG') && WP_DEBUG) {
+					error_log('MP_Product_Attributes_Admin::save_product_attribute POST: ' . print_r($_POST, true));
+					error_log('MP_Product_Attributes_Admin::save_product_attribute metabox: ' . print_r($metabox, true));
+				}
 		global $wpdb;
 
 		$product_atts		 = MP_Product_Attributes::get_instance();
@@ -317,9 +328,36 @@ class MP_Product_Attributes_Admin {
 		$table_name_terms	 = $wpdb->prefix . 'mp_product_attributes_terms';
 		$redirect_url		 = remove_query_arg( array( 'action', 'action2' ) );
 
+		// Robust: Terms aus verschachtelten Arrays extrahieren
+		$terms = array();
 		foreach ( $metabox->fields as $k => $field ) {
 			if ( 'product_attribute_terms' == $field->args[ 'name' ] ) {
-				$terms = $metabox->fields[ $k ]->sort_subfields( mp_get_post_value( 'product_attribute_terms' ) );
+				$raw_terms = mp_get_post_value( 'product_attribute_terms' );
+				// Format: [0][name][existing][id], [0][name][new][id], [0][slug][existing][id], ...
+				if (is_array($raw_terms)) {
+					foreach ($raw_terms as $row) {
+						if (!is_array($row)) continue; // Nur Arrays verarbeiten
+						// Sammle alle existing und new
+						foreach (['existing', 'new'] as $type) {
+							if (
+								isset($row['name']) && is_array($row['name']) &&
+								isset($row['name'][$type]) && is_array($row['name'][$type])
+							) {
+								foreach ($row['name'][$type] as $id => $name) {
+									$slug = '';
+									if (
+										isset($row['slug']) && is_array($row['slug']) &&
+										isset($row['slug'][$type]) && is_array($row['slug'][$type]) &&
+										isset($row['slug'][$type][$id])
+									) {
+										$slug = $row['slug'][$type][$id];
+									}
+									$terms[] = array('id' => ($type == 'existing' ? '_' . $id : $id), 'name' => $name, 'slug' => $slug);
+								}
+							}
+						}
+					}
+				}
 				break;
 			}
 		}
@@ -341,16 +379,48 @@ class MP_Product_Attributes_Admin {
 			) );
 
 			//insert terms
-			foreach ( $terms as $order => $term ) {
-				$id		 = key( $term );
-				$term	 = current( $term );
+					foreach ( $terms as $order => $term ) {
+						if (!is_array($term) || !isset($term['name'])) continue;
+						$term_slug = isset($term['slug']) ? $term['slug'] : '';
+						$term_name = $term['name'];
+						$id = isset($term['id']) ? $term['id'] : '';
 
-				if ( !empty( $term[ 'slug' ] ) ) {
-					wp_insert_term( $term[ 'name' ], $attribute_slug, array( 'slug' => substr( sanitize_key( $term[ 'slug' ] ), 0, 32 ) ) );
-				} else {
-					wp_insert_term( $term[ 'name' ], $attribute_slug );
-				}
-			}
+						$term_args = array();
+
+						if ( false === strpos( $id, '_' ) ) {
+							if ( !empty( $term_slug ) ) {
+								$term_args[ 'slug' ] = substr( sanitize_key( $term_slug ), 0, 32 );
+							}
+
+							$inserted = wp_insert_term( $term_name, $attribute_slug, $term_args );
+
+							if ( !is_wp_error( $inserted ) ) {
+								$term_ids[]  = $term_id  = $inserted[ 'term_id' ];
+							} else {
+								// term slug already exists, get existing term slug
+								$term_ids[]  = $term_id  = $inserted->error_data[ 'term_exists' ];
+							}
+						} else {
+							$term_id             = $term_ids[]             = substr( $id, 1 );
+							$term_args[ 'slug' ] = $term_slug;
+							$term_args[ 'name' ] = $term_name;
+
+							if ( !empty( $term_args[ 'slug' ] ) ) {
+								$term_args[ 'slug' ] = substr( sanitize_key( $term_args[ 'slug' ] ), 0, 32 );
+							}
+
+							wp_update_term( $term_id, $attribute_slug, $term_args );
+						}
+
+						// Update term order
+						if (isset($term_id)) {
+							$wpdb->update( $wpdb->terms, array(
+								'term_order' => ($order + 1)
+							), array(
+								'term_id' => $term_id
+							) );
+						}
+					}
 
 			//insert product categories
 			if ( $cats = mp_get_post_value( 'product_attribute_categories' ) ) {
@@ -385,28 +455,32 @@ class MP_Product_Attributes_Admin {
 
 			//insert terms
 			foreach ( $terms as $order => $term ) {
-				$id		 = key( $term );
-				$term	 = current( $term );
+				// Robust: Typprüfung und Validierung
+				if (!is_array($term)) continue;
+				$id = isset($term['id']) ? $term['id'] : '';
+				$term_name = isset($term['name']) && is_string($term['name']) ? $term['name'] : '';
+				$term_slug = isset($term['slug']) && is_string($term['slug']) ? $term['slug'] : '';
 
-				$term_args	 = array();
-				$term_slug	 = $term[ 'slug' ];
-				$term_name	 = $term[ 'name' ];
+				// Nur verarbeiten, wenn Name vorhanden
+				if (empty($term_name)) continue;
+
+				$term_args = array();
 
 				if ( false === strpos( $id, '_' ) ) {
 					if ( !empty( $term_slug ) ) {
 						$term_args[ 'slug' ] = substr( sanitize_key( $term_slug ), 0, 32 );
 					}
 
-					$term = wp_insert_term( $term_name, $attribute_slug, $term_args );
+					$inserted = wp_insert_term( $term_name, $attribute_slug, $term_args );
 
-					if ( !is_wp_error( $term ) ) {
-						$term_ids[]	 = $term_id	 = $term[ 'term_id' ];
+					if ( !is_wp_error( $inserted ) ) {
+						$term_ids[]  = $term_id  = $inserted[ 'term_id' ];
 					} else {
 						// term slug already exists, get existing term slug
-						$term_ids[]	 = $term_id	 = $term->error_data[ 'term_exists' ];
+						$term_ids[]  = $term_id  = $inserted->error_data[ 'term_exists' ];
 					}
 				} else {
-					$term_id			 = $term_ids[]			 = substr( $id, 1 );
+					$term_id             = $term_ids[]             = substr( $id, 1 );
 					$term_args[ 'slug' ] = $term_slug;
 					$term_args[ 'name' ] = $term_name;
 
@@ -418,20 +492,22 @@ class MP_Product_Attributes_Admin {
 				}
 
 				// Update term order
-				$wpdb->update( $wpdb->terms, array(
-					'term_order' => ($order + 1)
-				), array(
-					'term_id' => $term_id
-				) );
+				if (isset($term_id)) {
+					$wpdb->update( $wpdb->terms, array(
+						'term_order' => ($order + 1)
+					), array(
+						'term_id' => $term_id
+					) );
+				}
 			}
-
-			// Remove deleted terms
 			$unused_terms = get_terms( $attribute_slug, array(
 				'hide_empty' => false,
 				'exclude'	 => $term_ids
 			) );
 			foreach ( $unused_terms as $term ) {
-				wp_delete_term( $term->term_id, $attribute_slug );
+				if (is_object($term) && isset($term->term_id)) {
+					wp_delete_term( $term->term_id, $attribute_slug );
+				}
 			}
 
 			//update product categories
@@ -474,6 +550,7 @@ class MP_Product_Attributes_Admin {
 		<script type="text/javascript">
 		document.addEventListener('DOMContentLoaded', function() {
 			var subfields = document.querySelectorAll('.wpmudev-subfields');
+			// Slug generieren bei Blur
 			subfields.forEach(function(subfieldWrap) {
 				subfieldWrap.addEventListener('blur', function(e) {
 					var input = e.target;
@@ -487,6 +564,22 @@ class MP_Product_Attributes_Admin {
 					slugField.value = slug;
 				}, true);
 			});
+			// Slug generieren beim Speichern
+			var form = document.querySelector('form');
+			if (form) {
+				form.addEventListener('submit', function() {
+					var nameInputs = form.querySelectorAll('input[name^="product_attribute_terms"][name*="[name]"]');
+					nameInputs.forEach(function(input) {
+						var subfield = input.closest('.wpmudev-subfield');
+						var nextSubfield = subfield ? subfield.nextElementSibling : null;
+						var slugField = nextSubfield ? nextSubfield.querySelector('input') : null;
+						if (slugField && slugField.value.trim().length === 0) {
+							var slug = input.value.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+							slugField.value = slug;
+						}
+					});
+				});
+			}
 		});
 		</script>
 		<?php

@@ -148,32 +148,41 @@ class MP_Products_Screen {
 		}
 		?>
 		<script type="text/javascript">
-			( function ($) {
-				var $inputs = $('input[name="tax_input[product_category][]"]');
+		document.addEventListener('DOMContentLoaded', function() {
+			var inputs = document.querySelectorAll('input[name="tax_input[product_category][]"]');
+			var subfields = document.querySelectorAll('.wpmudev-subfield');
 
-				var toggleProductAttributes = function () {
-					var $subfield = $('.wpmudev-subfield');
-
-					if ($inputs.filter(':checked').length == 0) {
-						// no categories checked - reset all product attributes to visible
-						$subfield.has('[name*="product_attr_"]').removeClass('wpmudev-field-hidden');
-						return;
-					}
-
-					// hide all product attributes
-					$subfield.has('[name*="product_attr_"]').addClass('wpmudev-field-hidden');
-
-					// loop through checked input and show associated attributes
-					$inputs.filter(':checked').each(function () {
-						$subfield.has('[data-product-category-' + $(this).val() + ']').removeClass('wpmudev-field-hidden');
+			function toggleProductAttributes() {
+				var checkedInputs = Array.from(inputs).filter(function(input) { return input.checked; });
+				if (checkedInputs.length === 0) {
+					subfields.forEach(function(subfield) {
+						if (subfield.querySelector('[name*="product_attr_"]')) {
+							subfield.classList.remove('wpmudev-field-hidden');
+						}
 					});
-				};
-
-				$(document).ready(function () {
-					toggleProductAttributes();
-					$inputs.on('change', toggleProductAttributes);
+					return;
+				}
+				// hide all product attributes
+				subfields.forEach(function(subfield) {
+					if (subfield.querySelector('[name*="product_attr_"]')) {
+						subfield.classList.add('wpmudev-field-hidden');
+					}
 				});
-			}(jQuery) );
+				// show associated attributes
+				checkedInputs.forEach(function(input) {
+					var val = input.value;
+					subfields.forEach(function(subfield) {
+						if (subfield.querySelector('[data-product-category-' + val + ']')) {
+							subfield.classList.remove('wpmudev-field-hidden');
+						}
+					});
+				});
+			}
+			toggleProductAttributes();
+			inputs.forEach(function(input) {
+				input.addEventListener('change', toggleProductAttributes);
+			});
+		});
 		</script>
 		<?php
 	}
@@ -188,20 +197,27 @@ class MP_Products_Screen {
 	public function maybe_hide_core_metaboxes() {
 		?>
 		<script type="text/javascript">
-			jQuery(document).ready(function ($) {
-				$('[name="has_variations"]').on('change', function () {
-					var $elms = $('#postimagediv, #postdivrich, #postexcerpt');
-
-					if ($(this).prop('checked')) {
-						$elms.hide();
-					} else {
-						$elms.show();
-						/* This is required to fix a bug in webkit with the WYSIWYG showing up all
-						 garbled after unhiding */
-						$(window).trigger('scroll');
-					}
-				}).trigger('change');
-			});
+		document.addEventListener('DOMContentLoaded', function() {
+			var variationInput = document.querySelector('[name="has_variations"]');
+			var elms = [
+				document.getElementById('postimagediv'),
+				document.getElementById('postdivrich'),
+				document.getElementById('postexcerpt')
+			].filter(Boolean);
+			function toggleMetaboxes() {
+				if (variationInput && variationInput.checked) {
+					elms.forEach(function(el) { if (el) el.style.display = 'none'; });
+				} else {
+					elms.forEach(function(el) { if (el) el.style.display = ''; });
+					// Webkit-Fix: WYSIWYG nach Unhide refreshen
+					window.dispatchEvent(new Event('scroll'));
+				}
+			}
+			if (variationInput) {
+				variationInput.addEventListener('change', toggleMetaboxes);
+				toggleMetaboxes();
+			}
+		});
 		</script>
 		<?php
 	}

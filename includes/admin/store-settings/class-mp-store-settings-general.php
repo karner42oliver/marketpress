@@ -231,7 +231,7 @@ class MP_Store_Settings_General {
 	public function init_advanced_settings() {
 		$metabox = new WPMUDEV_Metabox( array(
 			'id'			 => 'mp-settings-general-advanced-settings',
-			'page_slugs'	 => array( 'store-settings', 'toplevel_page_store-settings' ),
+			'page_slugs'	 => array( 'store-settings-general' ),
 			'title'			 => __( 'Advanced Settings', 'mp' ),
 			'option_name'	 => 'mp_settings',
 		) );
