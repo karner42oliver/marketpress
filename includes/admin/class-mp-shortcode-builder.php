@@ -162,40 +162,13 @@ class MP_Shortcode_Builder {
 		}
 		
 		if ( ! function_exists( 'mp_get_plugin_slug' ) ) {
-			function mp_get_plugin_slug() {
-				if ( file_exists( dirname( __FILE__ ) . '/includes/admin/dash-notice/wpmudev-dash-notification.php' ) ) {
-					return 'marketpress/marketpress.php';
-				} else {
-					return 'wordpress-ecommerce/marketpress.php';
-				}
-			}
-		}
-
-		$shortcodes = array(
-			'mp_tag_cloud'			 => __( 'Display a cloud or list of your product tags.', 'mp' ),
-			'mp_list_categories'	 => __( 'Display an HTML list of your product categories.', 'mp' ),
-			'mp_dropdown_categories' => __( 'Display an HTML dropdown of your product categories.', 'mp' ),
-			'mp_featured_products'	 => __( 'Display a list of featured products.', 'mp' ),
-			'mp_popular_products'	 => __( 'Display a list of popular products ordered by sales.', 'mp' ),
-			'mp_related_products'	 => __( 'Display products related to the one being viewed.', 'mp' ),
-			'mp_list_products'		 => __( 'Display a list of products according to preference.', 'mp' ),
-			'mp_product'			 => __( 'Display a single product.', 'mp' ),
-			'mp_product_image'		 => __( 'Display the featured image of a given product.', 'mp' ),
-			'mp_buy_button'			 => __( 'Display the buy or add to cart button.', 'mp' ),
-			'mp_product_price'		 => __( 'Display the product price (and sale price).', 'mp' ),
-			'mp_product_sku'		 => __( 'Display the product SKU number(s).', 'mp' ),
-			'mp_product_stock'		 => __( 'Display the product stock.', 'mp' ),
-			'mp_product_meta'		 => __( 'Display the full product meta box with price and buy now/add to cart button.', 'mp' ),
-			'mp_cart_widget'		 => __( 'Display the cart widget.', 'mp' ),
-			'mp_cart_link'			 => __( 'Display a link or url to the current shopping cart page.', 'mp' ),
-			'mp_store_link'			 => __( 'Display a link or url to the current store page.', 'mp' ),
-			'mp_products_link'		 => __( 'Display a link or url to the current products list page.', 'mp' ),
-			'mp_orderstatus_link'	 => __( 'Display a link or url to the order status page.', 'mp' ),
-			'mp_store_navigation'	 => __( 'Display a list of links to your store pages.', 'mp' ),
-		);
-		
-		if ( is_multisite() && is_plugin_active_for_network( mp_get_plugin_slug() ) ) {
-			$settings = get_site_option( 'mp_network_settings', array() );
+			   function mp_get_plugin_slug() {
+				   if ( file_exists( dirname( __FILE__ ) . '/includes/admin/dash-notice/wpmudev-dash-notification.php' ) ) {
+					   return 'marketpress/marketpress.php';
+				   } else {
+					   return 'wordpress-ecommerce/marketpress.php';
+				   }
+			   }
 			if ( ( isset($settings['main_blog']) && mp_is_main_site() ) || isset($settings['main_blog']) && !$settings['main_blog'] ) {
 				$mu_shortcodes = array(
 					'mp_list_global_products'	  => __( 'Display a list or grid  of your global products.', 'mp' ),

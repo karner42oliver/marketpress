@@ -143,6 +143,7 @@ class MP_Products_Screen {
 				'show_count'      => 0,
 				'orderby'         => 'name',
 				'selected'        => isset( $wp_query->query['cat'] ) ? $wp_query->query['cat'] : '',
+				'id'              => 'mp_filter_product_category', // eindeutige ID
 			);
 			wp_dropdown_categories( $dropdown_options );
 		}
