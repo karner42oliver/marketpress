@@ -120,14 +120,20 @@ private function __construct() {
 		add_submenu_page( 'store-settings', __( 'Store Settings: Payments', 'mp' ), __( 'Payments', 'mp' ), $cap, 'store-settings-payments', array( &$this, 'display_settings_form' ) );
 		add_submenu_page( 'store-settings', __( 'Store Settings: Product Attributes', 'mp' ), __( 'Product Attributes', 'mp' ), $cap, 'store-settings-productattributes', array( 'MP_Product_Attributes_Admin', 'display_product_attributes' ) );
 	
-		add_submenu_page( 'store-settings', __( 'Store Settings: Product Categories', 'mp' ), __( 'Product Categories', 'mp' ),
+		add_submenu_page(
+			'store-settings',
+			__( 'Store Settings: Product Categories', 'mp' ),
+			__( 'Product Categories', 'mp' ),
 			apply_filters( 'mp_manage_product_categories_cap', 'manage_product_categories' ),
-			'store-settings-productcategories', array( $this, 'redirect_to_product_categories' )
+			'edit-tags.php?taxonomy=product_category&post_type=' . MP_Product::get_post_type()
 		);
-	
-		add_submenu_page( 'store-settings', __( 'Store Settings: Product Tags', 'mp' ), __( 'Product Tags', 'mp' ),
+
+		add_submenu_page(
+			'store-settings',
+			__( 'Store Settings: Product Tags', 'mp' ),
+			__( 'Product Tags', 'mp' ),
 			apply_filters( 'mp_manage_product_tags_cap', 'manage_product_tags' ),
-			'store-settings-producttags', array( $this, 'redirect_to_product_tags' )
+			'edit-tags.php?taxonomy=product_tag&post_type=' . MP_Product::get_post_type()
 		);
 	
 		add_submenu_page( 'store-settings', __( 'Store Settings: Capabilities', 'mp' ), __( 'User Capabilities', 'mp' ), $cap, 'store-settings-capabilities', array( &$this, 'display_settings_form' ) );

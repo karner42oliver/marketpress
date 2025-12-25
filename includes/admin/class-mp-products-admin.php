@@ -77,6 +77,8 @@ class MP_Products_Screen {
 		}
 		add_filter( 'enter_title_here', array( &$this, 'custom_placeholder_title' ), 10, 2 );
 		add_action( 'admin_menu', array( &$this, 'remove_metaboxes' ) );
+		// Füge die Metabox für Produktbilder IMMER hinzu (auch nach Select2-Entfernung)
+		add_action( 'add_meta_boxes', array( &$this, 'add_product_image_metabox' ) );
 	}
 
 	/**
@@ -572,7 +574,7 @@ class MP_Products_Screen {
 					  //$prices[] = mp_format_currency( '', $price[ 'regular' ] );
 					  }
 
-					  $prices = mp_format_currency( '', $price[ 'lowest' ] ).' - '.mp_format_currency( '', $price[ 'highest' ] );
+					  $prices = mp_format_currency( '', $price[ 'lowest' ]).' - '.mp_format_currency( '', $price[ 'highest' ] );
 					  } */
 				} else {
 					$price = $product->get_price();
@@ -651,7 +653,7 @@ class MP_Products_Screen {
 	public function init_metaboxes() {
 		$this->init_product_type_metabox();
 		$this->init_product_price_inventory_variants_metabox();
-		$this->init_product_images_metabox();
+//		$this->init_product_images_metabox();
 //$this->init_product_details_metabox();
 //$this->init_variations_metabox();
 		$this->init_related_products_metabox();
@@ -1866,67 +1868,6 @@ WHERE $delete_where"
 	}
 
 	/**
-	 * Initializes the product type metabox
-	 *
-	 * @since 3.0
-	 * @access public
-	 */
-	public function init_product_images_metabox() {
-
-		$metabox = new WPMUDEV_Metabox( apply_filters( 'mp_metabox_array_mp-product-images-metabox', array(
-			'id'          => 'mp-product-images-metabox',
-			'title'       => sprintf( __( '%1$sProduct Images%2$s %3$sAdd images of the product. The first image on the list is the featured image for this product (you can reorder images on the list)%2$s', 'mp' ), '<span class="mp_meta_section_title">', '</span>', '<span class="mp_meta_bellow_desc">' ),
-			'post_type'   => MP_Product::get_post_type(),
-			'context'     => 'normal',
-			'conditional' => array(
-				'action'   => 'show',
-				'operator' => 'OR',
-				array(
-					'name'  => 'has_variation',
-					'value' => 'no',
-				),
-				array(
-					'name'  => 'product_type',
-					'value' => 'external',
-				),
-			),
-		) ) );
-
-		$metabox->add_field( 'images', apply_filters( 'mp_add_field_array_product_images', array(
-			'name'        => 'product_images',
-			'label'       => '',
-			//array( 'text' => sprintf( __( '%3$sProduct Variations%2$s', 'mp' ), '<span class="mp_variations_product_name">', '</span>', '<span class="mp_variations_title">' ) ),
-			//'message'	 => __( 'Images', 'mp' ),
-			'conditional' => array(
-				'action'   => 'hide',
-				'operator' => 'OR',
-				array(
-					'name'  => 'product_type',
-					'value' => 'external',
-				),
-				array(
-					'name'  => 'has_variation',
-					'value' => 'yes',
-				),
-			),
-			'class'       => 'mp_product_images'
-		) ) );
-
-		/* $repeater = $metabox->add_field( 'repeater', array(
-		  'name'			 => 'product_images',
-		  'layout'		 => 'rows',
-		  'add_row_label'	 => __( 'Add Image', 'mp' ),
-		  'class' => 'mp_product_images'
-		  ) );
-
-		  if ( $repeater instanceof WPMUDEV_Field ) {
-		  $repeater->add_sub_field( 'image', array(
-		  'name' => 'product_image',
-		  ) );
-		  } */
-	}
-
-	/**
 	 * Initializes the product details metabox
 	 *
 	 * @since 3.0
@@ -2001,7 +1942,7 @@ WHERE $delete_where"
 					'value' => 'physical',
 				),
 				array(
-					'name'  => 'inventory_tracking',
+					'name'  => 'variations[inventory_tracking]',
 					'value' => 1,
 				),
 			),
@@ -2030,9 +1971,16 @@ WHERE $delete_where"
 			'label'         => array( 'text' => __( 'External URL', 'mp' ) ),
 			'default_value' => 'http://',
 			'conditional'   => array(
-				'name'   => 'product_type',
-				'value'  => 'external',
-				'action' => 'show',
+				'action'   => 'show',
+				'operator' => 'AND',
+				array(
+					'name'  => 'product_type',
+					'value' => 'external',
+				),
+				array(
+					'name'  => 'has_variation',
+					'value' => 'no',
+				),
 			),
 			'validation'    => array(
 				'url' => true,
@@ -2048,7 +1996,12 @@ WHERE $delete_where"
 		$metabox->add_field( 'text', apply_filters( 'mp_add_field_array_regular_price', array(
 			'name'       => 'regular_price',
 			'label'      => array( 'text' => __( 'Regular Price', 'mp' ) ),
-			'validation' => array(
+			'conditional' => array(
+				'name'   => 'product_type',
+				'value'  => array( 'physical', 'digital' ),
+				'action' => 'show',
+			),
+			'validation'  => array(
 				'required' => true,
 				'number'   => true,
 				'min'      => 0,
@@ -2068,15 +2021,15 @@ WHERE $delete_where"
 					'data-msg-lessthan' => __( 'Value must be less than regular price', 'mp' ),
 				),
 				'validation' => array(
-					'number' => true,
-					'min'    => 0,
-					//'lessthan'	 => '[name*="regular_price"]'
+					'number'   => true,
+					'min'      => 0,
+					'lessthan' => '[name*="regular_price"]'
 				),
 			) ) );
 
 			$sale_price->add_field( 'datepicker', apply_filters( 'mp_add_field_array_start_date', array(
 				'name'  => 'start_date',
-				'label' => array( 'text' => __( 'Start Date (if applicable)', 'mp' ) ),
+				'label' => array( 'text' => __( 'Start Date', 'mp' ) ),
 			) ) );
 
 			$sale_price->add_field( 'datepicker', apply_filters( 'mp_add_field_array_end_date', array(
@@ -2130,6 +2083,7 @@ WHERE $delete_where"
 				'label'      => array( 'text' => __( 'Pounds', 'mp' ) ),
 				'validation' => array(
 					'digits' => true,
+					'min'    => 0,
 				),
 			) ) );
 
@@ -2138,6 +2092,7 @@ WHERE $delete_where"
 				'label'      => array( 'text' => __( 'Ounces', 'mp' ) ),
 				'validation' => array(
 					'digits' => true,
+					'min'    => 0,
 				),
 			) ) );
 		}
@@ -2506,6 +2461,23 @@ WHERE $delete_where"
 		}
 	}
 
+	/**
+	 * Füge die Standard-WordPress-Metabox für Produktbilder wieder hinzu
+	 *
+	 * @since 3.0
+	 * @access public
+	 * @action add_meta_boxes
+	 */
+	public function add_product_image_metabox() {
+		add_meta_box(
+			'postimagediv',
+			__( 'Product Image', 'mp' ),
+			'post_thumbnail_meta_box',
+			MP_Product::get_post_type(),
+			'side',
+			'default'
+		);
+	}
 }
 
 MP_Products_Screen::get_instance();

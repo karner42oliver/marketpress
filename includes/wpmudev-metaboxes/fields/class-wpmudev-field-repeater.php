@@ -472,46 +472,53 @@ jQuery(document).ready(function($){
 								
 		$clonedRow.find('.wpmudev-subfield-inner').css('display', 'none');
 		$clonedRow.appendTo($subfields);
+		// Korrigiere Index: immer an das Ende anhängen
+		// Ermittle den höchsten vorhandenen Index für neue Felder
+		var maxNewIndex = -1;
+		$subfields.find('[name*="[new]"]').each(function(){
+			var match = $(this).attr('name').match(/\[new\]\[(\d+)\]/);
+			if(match && parseInt(match[1]) > maxNewIndex) {
+				maxNewIndex = parseInt(match[1]);
+			}
+		});
+		var newIndex = maxNewIndex + 1;
 		$clonedRow.find('[name]').each(function(){
 			var $this = $(this),
-					name = $this.attr('name').replace('existing', 'new'),
-					nameParts = name.split('['),
-					newName = nameParts[0];
-			
-			for ( i = 1; i < (nameParts.length - 1); i++ ) {
+				name = $this.attr('name').replace('existing', 'new'),
+				nameParts = name.split('['),
+				newName = nameParts[0];
+			for (i = 1; i < (nameParts.length - 1); i++) {
 				var namePart = nameParts[i].replace(']', '');
 				newName += '[' + namePart + ']';
 			}
-			
 			// Reset input value
-			if ( $this.attr('data-default-value') !== undefined ) {
+			if ($this.attr('data-default-value') !== undefined) {
 				$this.val($this.attr('data-default-value'));
 			} else {
 				$this.val('');
 			}
-			
-			$this.attr('name', newName + '[' + $clonedRow.index() + ']');
+			$this.attr('name', newName + '[new][' + newIndex + ']');
 		});
 		
 		$clonedRow.find('.wpmudev-subfield-inner').show();
-		
+
 		if ( didOne ) {
 			return;
 		}
-		
+
 		didOne = true;
-		
+
 		// Change the id of each field
 		$clonedRow.find('[id]').each(function(){
 			var $this = $(this),
-					oldId = $this.attr('id');
-					
+				oldId = $this.attr('id');
 			$this.attr('id', '').uniqueId();
 			$clonedRow.find('label[for="' + oldId + '"]').attr('for', $this.attr('id'));
 		});
-		
-		updateOrdering($clonedRow.siblings().andSelf());
-		
+
+		// Nach dem Hinzufügen: Indexanzeige und Namen für alle Zeilen aktualisieren
+		updateOrdering($subfields.find('.wpmudev-subfield-group'));
+
 		/**
 		 * Triggered when a row is added.
 		 *
@@ -519,7 +526,7 @@ jQuery(document).ready(function($){
 		 * @param object group
 		 */
 		$(document).trigger('wpmudev_repeater_field/after_add_field_group', [ $clonedRow ]);
-		
+
 		$('.wpmudev-subfield-delete-group-link').show();
 	});
 });

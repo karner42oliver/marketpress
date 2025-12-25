@@ -5,10 +5,6 @@ Plugin URI: https://github.com/cp-psource/marketpress
 Description: Zeigt MarketPress-Statistiken mithilfe von Chart.js an.
 Version: 1.0.0
 Author: DerN3rd
-        // Closing PHP tag removed to prevent unwanted output.
-    }
-
-load_plugin_textdomain('mp_st', false, basename(dirname(__FILE__)) . '/languages');
 
 /* Plugin-Aktivierung */
 register_activation_hook(__FILE__, 'mp_st_install');
