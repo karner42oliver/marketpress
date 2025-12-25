@@ -1,0 +1,59 @@
+/* Tom Select Material Design (grobes Beispiel) */
+.ts-wrapper.psource-post-select {
+  font-family: Roboto, Arial, sans-serif;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #e0e0e0;
+  padding: 4px 8px;
+}
+.ts-control {
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: #333;
+}
+.ts-control input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 8px 0;
+  width: 100%;
+}
+.ts-dropdown {
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  margin-top: 4px;
+}
+.ts-dropdown .ts-dropdown-content {
+  padding: 4px 0;
+}
+.ts-dropdown .ts-dropdown-content > div {
+  padding: 10px 16px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.ts-dropdown .ts-dropdown-content > div:hover {
+  background: #f5f5f5;
+}
+.ts-control .item {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 16px;
+  padding: 4px 12px;
+  margin: 2px 4px 2px 0;
+  font-size: 15px;
+}
+.ts-control .item .remove {
+  color: #fff;
+  margin-left: 8px;
+  cursor: pointer;
+}
+.ts-control .item .remove:hover {
+  color: #ffc107;
+}

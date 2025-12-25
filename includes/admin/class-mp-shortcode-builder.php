@@ -153,7 +153,7 @@ class MP_Shortcode_Builder {
 	 */
 	public function display_short_code_form() {
 		// Shortcodes initialisieren
-		$shortcodes = array(
+			   $shortcodes = array(
 			'mp_list_categories' => __( 'Display a list of product categories.', 'mp' ),
 			'mp_list_products'   => __( 'Display a list or grid of products.', 'mp' ),
 			'mp_product'         => __( 'Display a single product.', 'mp' ),
@@ -161,7 +161,7 @@ class MP_Shortcode_Builder {
 			'mp_checkout'        => __( 'Display the checkout form.', 'mp' ),
 			'mp_order_status'    => __( 'Display the order status.', 'mp' ),
 		);
-		if ( did_action( 'media_buttons' ) == 0 ) {
+			   if ( did_action( 'media_buttons' ) == 0 ) {
 			// Only continue if a tinymce editor exists on the current page
 			return;
 		}
@@ -170,7 +170,10 @@ class MP_Shortcode_Builder {
 			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 		}
 		
-		if ( ! function_exists( 'mp_get_plugin_slug' ) ) {
+			   // Einstellungen laden, damit $settings für Multisite-Shortcodes verfügbar ist
+			   $settings = get_option( 'mp_settings' );
+
+			   if ( ! function_exists( 'mp_get_plugin_slug' ) ) {
 			   function mp_get_plugin_slug() {
 				   if ( file_exists( dirname( __FILE__ ) . '/includes/admin/dash-notice/psource-dash-notification.php' ) ) {
 					   return 'marketpress/marketpress.php';
@@ -1457,10 +1460,7 @@ class MP_Shortcode_Builder {
 			|| ( isset( $_GET['post_type'] ) && ($_GET['post_type'] == 'mp_coupon' || $_GET['post_type'] == 'mp_order' || $_GET['post_type'] == 'product' || $_GET['post_type'] == 'page') ) 
 			|| ( isset( $screenpage->post_type ) && ( $screenpage->post_type == "product" || $screenpage->post_type == "incsub_event" || $screenpage->post_type == "post" || $screenpage->post_type == "mp_order" || $screenpage->post_type == "mp_coupon" || $screenpage->post_type == "page") ) )  {
 
-		wp_enqueue_style( 'colorbox', mp_plugin_url( 'includes/admin/ui/colorbox/colorbox.css' ), false, MP_VERSION );
-		wp_enqueue_script( 'colorbox', mp_plugin_url( 'ui/js/jquery.colorbox-min.js' ), false, MP_VERSION );
-
-		wp_enqueue_script( 'mp-shortcode-builder', mp_plugin_url( 'includes/admin/ui/js/shortcode-builder.js' ), array( 'colorbox' ), MP_VERSION );
+			   wp_enqueue_script( 'mp-shortcode-builder', mp_plugin_url( 'includes/admin/ui/js/shortcode-builder.js' ), array(), MP_VERSION );
 		wp_localize_script( 'mp-shortcode-builder', 'MP_ShortCode_Builder', array(
 			'select_product' => __( 'Select a Product', 'mp' ),
 		) );		}

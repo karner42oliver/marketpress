@@ -1,7 +1,9 @@
 (function($){
+	var shortcodeModalInstance = null;
+
 	$(document).ready(function($){
 		initShortCodeBuilder();
-		initColorbox();
+		initShortcodeModal();
 		initSelect2();
 		initProductSearchField();
 		initToolTips();
@@ -29,6 +31,19 @@
 		});
 	}
 
+	var initShortcodeModal = function() {
+		$('body').on('click', '.mp-shortcode-builder-button', function(){
+			var $form = $('#mp-shortcode-builder-form');
+			if ($form.length === 0) return;
+			shortcodeModalInstance = basicLightbox.create($form[0].outerHTML, {
+				onShow: function(instance) {
+					// Optional: Felder/Events im Modal reinitialisieren
+				}
+			});
+			shortcodeModalInstance.show();
+		});
+	};
+
  	var initShortCodeBuilder = function() {
 		var $form = $('#mp-shortcode-builder-form');
 
@@ -37,14 +52,10 @@
 
 			if ( $table.length == 0 ) {
 				$form.find('.form-table').hide();
-				$.colorbox.resize();
 				return; // bail
 			}
 
 			$table.show().siblings('.form-table').hide();
-			$.colorbox.resize({
-				"height" : "80%"
-			});
 			refreshChosenFields();
 		});
 
@@ -77,27 +88,12 @@
 			shortcode += atts + ']';
 
 			window.send_to_editor(shortcode);
-			$.colorbox.close();
+			if(shortcodeModalInstance) shortcodeModalInstance.close();
 		});
 	};
 
 	var refreshChosenFields = function() {
 		$('.mp-chosen-select').trigger('chosen:updated');
-	};
-
-	var initColorbox = function() {
-		$('body').on('click', '.mp-shortcode-builder-button', function(){
-			var $this = $(this);
-
-			$.colorbox({
-				"width" : 800,
-				"maxWidth" : "80%",
-				"height" : "80%",
-				"inline" : true,
-				"href" : "#mp-shortcode-builder-form",
-				"opacity" : 0.7
-			});
-		});
 	};
 
 	var initSelect2 = function() {

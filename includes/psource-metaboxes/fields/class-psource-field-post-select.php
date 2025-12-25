@@ -78,12 +78,10 @@ class PSOURCE_Field_Post_Select extends PSOURCE_Field {
 			'order'					 => 'ASC',
 			'post_status'			 => array( 'publish' ),
 		), $args ) );
-		$data	 = array( 'posts' => array(), 'posts_per_page' => $args[ 'posts_per_page' ], 'total' => $query->found_posts );
-
+		$data = array();
 		while ( $query->have_posts() ) : $query->the_post();
-			$data[ 'posts' ][] = array( 'id' => get_the_ID(), 'text' => get_the_title() );
+			$data[] = array( 'id' => get_the_ID(), 'title' => get_the_title() );
 		endwhile;
-
 		wp_send_json( $data );
 	}
 
@@ -133,24 +131,42 @@ class PSOURCE_Field_Post_Select extends PSOURCE_Field {
 	 */
 	       public function print_scripts() {
 		       ?>
-		       <script type="text/javascript">
-		       document.addEventListener('DOMContentLoaded', function() {
-			       var selects = document.querySelectorAll('select.psource-post-select, input.psource-post-select');
-			       selects.forEach(function(el) {
-				       if (typeof SlimSelect !== 'undefined') {
-					       if (!el.slimSelect) {
-						       el.slimSelect = new SlimSelect({
-							       select: el,
-							       placeholder: el.getAttribute('data-placeholder') || '',
-							       allowDeselect: true,
-							       showSearch: true,
-							       closeOnSelect: !el.hasAttribute('multiple'),
-						       });
-					       }
-				       }
-			       });
-		       });
-		       </script>
+			   <script type="text/javascript">
+			   document.addEventListener('DOMContentLoaded', function() {
+				   document.querySelectorAll('select.psource-post-select').forEach(function(el) {
+					   var limit = parseInt(el.getAttribute('data-limit')) || 3;
+					   if (typeof TomSelect !== 'undefined') {
+						   if (!el.tomselect) {
+							   el.tomselect = new TomSelect(el, {
+								   maxItems: limit,
+								   valueField: 'id',
+								   labelField: 'title',
+								   searchField: 'title',
+								   plugins: ['remove_button'],
+								   create: false,
+								   load: function(query, callback) {
+									   if (!query.length) return callback();
+									   var url = (typeof marketpress_admin !== 'undefined' ? marketpress_admin.ajaxurl : ajaxurl);
+									   fetch(url + '?action=psource_field_post_select_search_posts&search_term=' + encodeURIComponent(query))
+										   .then(response => response.json())
+										   .then(json => {
+											   callback(json);
+										   }).catch(() => callback());
+								   },
+								   render: {
+									   option: function(item, escape) {
+										   return '<div>' + escape(item.title) + '</div>';
+									   },
+									   item: function(item, escape) {
+										   return '<div>' + escape(item.title) + '</div>';
+									   }
+								   }
+							   });
+						   }
+					   }
+				   });
+			   });
+			   </script>
 		       <?php
 		       parent::print_scripts();
 	       }
@@ -163,38 +179,17 @@ class PSOURCE_Field_Post_Select extends PSOURCE_Field {
 	 * @param int $post_id
 	 */
 	public function display( $post_id ) {
-		$value	 = $this->get_value( $post_id );
-		$data	 = array();
-		$ids	 = is_array( $value ) ? $value : explode( ',', $value );
-
-		foreach ( $ids as $id ) {
-			$data[] = $id . '->' . get_the_title( $id );
-		}
-
+		$value   = $this->get_value( $post_id );
+		$ids     = is_array( $value ) ? $value : explode( ',', $value );
 		$this->before_field();
-		if ( $this->args['multiple'] ) {
-			echo '<input type="hidden" ' . $this->parse_atts() . ' value="' . implode( ',', $ids ) . '" />';
-		} else {
-			// Seiten abfragen
-			$query_args = array();
-			if ( isset($this->args['custom']['data-query']) ) {
-				parse_str( html_entity_decode( $this->args['custom']['data-query'] ), $query_args );
+		$limit = isset($this->args['custom']['related_limit']) ? intval($this->args['custom']['related_limit']) : 3;
+		echo '<select class="psource-post-select" multiple="multiple" data-placeholder="' . esc_attr($this->args['custom']['data-placeholder']) . '" data-limit="' . $limit . '" style="width:100%">';
+		foreach ($ids as $id) {
+			if ($id && get_post($id)) {
+				echo '<option value="' . esc_attr($id) . '" selected>' . esc_html(get_the_title($id)) . '</option>';
 			}
-			$pages = get_posts( array_merge( array(
-				'post_type' => 'page',
-				'orderby'   => 'title',
-				'order'     => 'ASC',
-				'posts_per_page' => -1,
-				'post_status' => 'publish',
-			), $query_args ) );
-			echo '<select ' . $this->parse_atts() . '>';
-			echo '<option value="">' . esc_html( $this->args['custom']['data-placeholder'] ) . '</option>';
-			foreach ( $pages as $page ) {
-				$selected = in_array( $page->ID, $ids ) ? ' selected' : '';
-				echo '<option value="' . esc_attr( $page->ID ) . '"' . $selected . '>' . esc_html( $page->post_title ) . '</option>';
-			}
-			echo '</select>';
 		}
+		echo '</select>';
 		$this->after_field();
 	}
 

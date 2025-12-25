@@ -232,9 +232,46 @@ class MP_Admin {
 	 * @access public
 	 */
 	public function enqueue_styles_scripts() {
+								// basicLightbox einbinden
+								wp_enqueue_script(
+									'basiclightbox',
+									mp_plugin_url('ui/basicLightbox/basicLightbox.min.js'),
+									array(),
+									'5.0.4',
+									true
+								);
+								wp_enqueue_style(
+									'basiclightbox',
+									mp_plugin_url('ui/basicLightbox/basicLightbox.min.css'),
+									array(),
+									'5.0.4'
+								);
+						wp_enqueue_style(
+							'tom-select-material',
+							mp_plugin_url('ui/tom-select/tom-select-material.css'),
+							array('tom-select'),
+							'1.0'
+						);
+				// AJAX-URL für JS bereitstellen
+				wp_localize_script('tom-select', 'marketpress_admin', array(
+					'ajaxurl' => admin_url('admin-ajax.php')
+				));
 		global $pagenow, $post_type, $mp;
 
-		//wp_enqueue_script( 'mp-chosen', mp_plugin_url( 'includes/admin/ui/chosen/chosen.jquery.min.js' ), array( 'jquery' ), MP_VERSION );
+		// Tom Select einbinden
+		wp_enqueue_script(
+			'tom-select',
+			mp_plugin_url('ui/tom-select/tom-select.min.js'),
+			array(),
+			'2.2.2',
+			true
+		);
+		wp_enqueue_style(
+			'tom-select',
+			mp_plugin_url('ui/tom-select/tom-select.min.css'),
+			array(),
+			'2.2.2'
+		);
 
 		if ( !empty( $pagenow ) && ('post-new.php' === $pagenow || 'post.php' === $pagenow ) ) {
 			if ( $post_type == MP_Product::get_post_type() ) {
